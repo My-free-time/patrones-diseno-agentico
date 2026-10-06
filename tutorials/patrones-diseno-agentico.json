@@ -6,13 +6,7 @@
   "summary": "Prepara un proyecto de TypeScript, entiende qué resuelve un patrón agéntico y conecta un modelo con trazas y manejo de errores.",
   "description": "Una ruta de estudio construida con lo que llevo avanzado: entorno, conceptos y proyecto base. Adapto mis apuntes del curso de Fernando Herrera (DevTalles) a explicaciones y prácticas propias. Por ahora comprobamos la conexión; las implementaciones de patrones llegarán a medida que avance.",
   "audience": "Para quienes ya han programado y pueden leer funciones, objetos y async/await en JavaScript o TypeScript.",
-  "topics": [
-    "TypeScript",
-    "Agentes de IA",
-    "AI SDK",
-    "Node.js",
-    "Groq"
-  ],
+  "topics": ["TypeScript", "Agentes de IA", "AI SDK", "Node.js", "Groq"],
   "updatedAt": "2026-10-06T18:00:00.000Z",
   "prerequisites": [
     "Variables, funciones, objetos y promesas de JavaScript o TypeScript.",
@@ -50,7 +44,7 @@
           "id": "herramientas",
           "title": "Comprueba lo que ya tienes",
           "body": [
-            "Necesitas un editor, una terminal y Node.js con npm. Usaremos TypeScript y funciones asíncronas; conviene conocer variables, objetos, funciones y async/await.",
+            "Necesitas un editor, una terminal y Node.js 26 o posterior con npm para esta práctica. Usaremos TypeScript y funciones asíncronas; conviene conocer variables, objetos, funciones y async/await.",
             "Git será útil para versionar tus ejercicios cuando quieras. No necesitas una cuenta de GitHub para leer esta ruta ni para crear tu práctica local."
           ],
           "code": {
@@ -66,7 +60,7 @@
           "title": "Crea un espacio para practicar",
           "body": [
             "Abre una carpeta propia en el editor. Esta ruta incluye los ejemplos necesarios para reconstruir una base mínima sin clonar un repositorio.",
-            "El material que estoy estudiando todavía no está publicado en GitHub. En las siguientes lecciones crearemos package.json, tsconfig.json y los archivos de src."
+            "El material y el proyecto base están disponibles en My-free-time/patrones-diseno-agentico. Puedes consultarlos en GitHub o clonarlos; en las siguientes lecciones crearemos package.json, tsconfig.json y los archivos de src para entender cada parte de la base mínima."
           ],
           "code": {
             "file": "Terminal",
@@ -112,11 +106,11 @@
         },
         {
           "id": "github",
-          "question": "¿Qué haces mientras el curso aún no tiene repositorio público?",
+          "question": "¿Necesitas clonar el repositorio para practicar estas lecciones?",
           "options": [
-            "Crear tu práctica local a partir de los ejemplos.",
-            "Inventar una dirección de GitHub.",
-            "Esperar para poder leer las lecciones."
+            "No: puedes crear tu práctica local siguiendo los ejemplos.",
+            "Sí: sin clonar no puedes crear ningún archivo.",
+            "Debes publicar tus claves antes de comenzar."
           ],
           "correctIndex": 0,
           "explanation": "Los ejemplos están incluidos en la tutoría y puedes crear tus propios archivos localmente."
@@ -402,13 +396,7 @@
             "file": "src/actions/get-message-model.ts",
             "language": "typescript",
             "after": "import { generateText } from 'ai';\nimport { model } from '../helpers/selected-model.js';\n\nexport async function getMessageFromModel() {\n  const { text, usage } = await generateText({\n    model,\n    prompt: 'Responde solamente con: \"OK, todo listo!\"',\n  });\n\n  console.log('Respuesta del modelo:', text.trim());\n  console.log('Tokens:', usage.totalTokens ?? 'No disponible');\n}",
-            "highlightLines": [
-              5,
-              6,
-              7,
-              10,
-              11
-            ]
+            "highlightLines": [5, 6, 7, 10, 11]
           },
           "expected": "Con credenciales, red y modelo disponibles, la consola muestra la respuesta y los tokens reportados. Comprueba si el texto cumple la instrucción; no lo asumas."
         },
