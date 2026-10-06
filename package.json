@@ -1,0 +1,12 @@
+{
+  "name": "patrones-diseno-agentico-course",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "validate": "node scripts/check-files.mjs && node scripts/validate-course.mjs",
+    "hooks:enable": "git config core.hooksPath .githooks"
+  },
+  "engines": {
+    "node": ">=26"
+  }
+}

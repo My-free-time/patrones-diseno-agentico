@@ -1,0 +1,32 @@
+name: Validar curso y secretos
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - uses: actions/setup-node@249970729cb0ef3589644e2896645e5dc5ba9c38 # v6
+        with:
+          node-version: "26"
+      - name: Validar archivos y contenido
+        run: |
+          node scripts/check-files.mjs
+          node scripts/validate-course.mjs
+      - name: Revisar secretos en todo el historial
+        env:
+          VERSION: "8.30.1"
+        run: |
+          curl --fail --location --output "$RUNNER_TEMP/gitleaks.tar.gz" "https://github.com/gitleaks/gitleaks/releases/download/v${VERSION}/gitleaks_${VERSION}_linux_x64.tar.gz"
+          echo "551f6fc83ea457d62a0d98237cbad105af8d557003051f41f3e7ca7b3f2470eb  $RUNNER_TEMP/gitleaks.tar.gz" | sha256sum --check
+          tar -xzf "$RUNNER_TEMP/gitleaks.tar.gz" -C "$RUNNER_TEMP" gitleaks
+          "$RUNNER_TEMP/gitleaks" git --redact --no-banner --ignore-gitleaks-allow
+      - name: Compilar práctica sin llamadas al proveedor
+        working-directory: session3/agentic-patterns
+        run: |
+          npm ci --ignore-scripts
+          npm run build

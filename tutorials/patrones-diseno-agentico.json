@@ -1,0 +1,696 @@
+{
+  "schemaVersion": 1,
+  "slug": "patrones-diseno-agentico",
+  "title": "Patrones de diseño agéntico",
+  "subtitle": "Del primer prompt a una ejecución que puedes observar.",
+  "summary": "Prepara un proyecto de TypeScript, entiende qué resuelve un patrón agéntico y conecta un modelo con trazas y manejo de errores.",
+  "description": "Una ruta de estudio construida con lo que llevo avanzado: entorno, conceptos y proyecto base. Adapto mis apuntes del curso de Fernando Herrera (DevTalles) a explicaciones y prácticas propias. Por ahora comprobamos la conexión; las implementaciones de patrones llegarán a medida que avance.",
+  "audience": "Para quienes ya han programado y pueden leer funciones, objetos y async/await en JavaScript o TypeScript.",
+  "topics": [
+    "TypeScript",
+    "Agentes de IA",
+    "AI SDK",
+    "Node.js",
+    "Groq"
+  ],
+  "updatedAt": "2026-10-06T18:00:00.000Z",
+  "prerequisites": [
+    "Variables, funciones, objetos y promesas de JavaScript o TypeScript.",
+    "Un editor, una terminal y Node.js con npm; Git para guardar tus cambios.",
+    "Para ejecutar las llamadas: acceso API a Groq y una credencial propia. Puedes estudiar los conceptos y clasificar errores sin realizar llamadas."
+  ],
+  "preview": {
+    "title": "Una primera llamada, un resultado observable",
+    "description": "Una instrucción pequeña para comprobar la conexión. Después añadiremos trazas y diagnóstico de errores.",
+    "code": {
+      "file": "get-message-model.ts",
+      "language": "typescript",
+      "after": "const { text, usage } = await generateText({\n  model,\n  prompt: 'Responde solamente con: \"OK, todo listo!\"',\n});\n\nconsole.log(text.trim());\nconsole.log(usage.totalTokens ?? 'No disponible');",
+      "highlightLines": []
+    }
+  },
+  "lessons": [
+    {
+      "slug": "prepara-tu-entorno",
+      "title": "Prepara tu entorno de práctica",
+      "summary": "Comprueba las herramientas y elige un solo proveedor para empezar.",
+      "minutes": 10,
+      "chapter": "1. Preparación",
+      "sourcePaths": [
+        "session1: Instalaciones recomendadas/instalaciones.md",
+        "Introducion.md"
+      ],
+      "objectives": [
+        "Comprobar Node.js, npm y Git.",
+        "Separar herramientas necesarias de personalizaciones opcionales.",
+        "Elegir cómo ejecutar las primeras llamadas al modelo."
+      ],
+      "steps": [
+        {
+          "id": "herramientas",
+          "title": "Comprueba lo que ya tienes",
+          "body": [
+            "Necesitas un editor, una terminal y Node.js con npm. Usaremos TypeScript y funciones asíncronas; conviene conocer variables, objetos, funciones y async/await.",
+            "Git será útil para versionar tus ejercicios cuando quieras. No necesitas una cuenta de GitHub para leer esta ruta ni para crear tu práctica local."
+          ],
+          "code": {
+            "file": "Terminal",
+            "language": "bash",
+            "after": "node --version\nnpm --version\ngit --version",
+            "highlightLines": []
+          },
+          "expected": "Cada comando imprime una versión. Si falta una herramienta, instálala desde su sitio oficial y abre una terminal nueva."
+        },
+        {
+          "id": "espacio-local",
+          "title": "Crea un espacio para practicar",
+          "body": [
+            "Abre una carpeta propia en el editor. Esta ruta incluye los ejemplos necesarios para reconstruir una base mínima sin clonar un repositorio.",
+            "El material que estoy estudiando todavía no está publicado en GitHub. En las siguientes lecciones crearemos package.json, tsconfig.json y los archivos de src."
+          ],
+          "code": {
+            "file": "Terminal",
+            "language": "bash",
+            "after": "mkdir agentic-patterns-practica\ncd agentic-patterns-practica",
+            "highlightLines": []
+          },
+          "expected": "Tienes una carpeta de práctica vacía. Los próximos pasos se ejecutan desde esa carpeta."
+        },
+        {
+          "id": "un-proveedor",
+          "title": "Elige un proveedor para comenzar",
+          "body": [
+            "El proyecto de estudio contempla Groq, OpenAI, Anthropic, Google y Ollama. Para comprobar la base basta con conectar uno.",
+            "Esta edición desarrolla el ejemplo con Groq, que es el proveedor seleccionado en el código actual. Ollama y los otros adaptadores quedan para futuras prácticas. No necesitas instalar todos para seguir las primeras lecciones."
+          ],
+          "code": {
+            "file": "Decisión de práctica",
+            "language": "text",
+            "after": "Proveedor del ejemplo: Groq\nAdaptador: @ai-sdk/groq\nVariable: GROQ_API_KEY\nModelo del material: openai/gpt-oss-20b",
+            "highlightLines": []
+          },
+          "expected": "Puedes identificar el proveedor, el paquete que lo conecta y la variable que configuraremos.",
+          "note": "Consulta las condiciones y la disponibilidad del proveedor antes de realizar llamadas. Los identificadores, las cuotas y el acceso pueden cambiar."
+        }
+      ],
+      "exercise": {
+        "prompt": "Anota las versiones de tus herramientas y explica qué proveedor usarás para la primera llamada. Crea la carpeta de práctica.",
+        "hint": "El editor y la terminal son elecciones personales. El ejemplo usa Node.js con npm y un único adaptador.",
+        "solution": "Tu lista debe incluir Node.js, npm y un editor. Groq es suficiente para este ejemplo; no hay que configurar todos los proveedores ni clonar GitHub."
+      },
+      "questions": [
+        {
+          "id": "proveedor",
+          "question": "¿Cuántos proveedores necesitas configurar para comprobar la base?",
+          "options": [
+            "Todos los que aparecen en el material.",
+            "Uno que puedas utilizar.",
+            "Ninguno: el modelo viene dentro del SDK."
+          ],
+          "correctIndex": 1,
+          "explanation": "Un adaptador conecta la aplicación con un proveedor. El SDK no incluye un modelo local por sí solo."
+        },
+        {
+          "id": "github",
+          "question": "¿Qué haces mientras el curso aún no tiene repositorio público?",
+          "options": [
+            "Crear tu práctica local a partir de los ejemplos.",
+            "Inventar una dirección de GitHub.",
+            "Esperar para poder leer las lecciones."
+          ],
+          "correctIndex": 0,
+          "explanation": "Los ejemplos están incluidos en la tutoría y puedes crear tus propios archivos localmente."
+        }
+      ]
+    },
+    {
+      "slug": "que-es-un-patron-agentico",
+      "title": "Qué problema resuelve un patrón agéntico",
+      "summary": "Distingue una llamada al modelo de un sistema que usa herramientas, observa resultados y controla sus acciones.",
+      "minutes": 15,
+      "chapter": "2. Conceptos",
+      "sourcePaths": [
+        "session2/introduccion.md",
+        "session2/¿Qué son patrones de diseño agénticos?.md"
+      ],
+      "objectives": [
+        "Distinguir patrón, patrón de diseño y patrón agéntico.",
+        "Reconocer cuándo falta contexto o acceso a datos.",
+        "Elegir una estrategia según el fallo observado."
+      ],
+      "steps": [
+        {
+          "id": "problema-recurrente",
+          "title": "Empieza por un problema que se repite",
+          "body": [
+            "Un patrón describe una regularidad. Un patrón de diseño propone una forma reutilizable de resolver un problema en un contexto determinado.",
+            "En un sistema agéntico, el patrón organiza cómo el modelo obtiene información, decide, usa herramientas o pide intervención. El nombre del modelo puede cambiar; el problema que necesitas resolver sigue siendo tu punto de partida."
+          ],
+          "code": {
+            "file": "Mapa conceptual",
+            "language": "text",
+            "after": "Patrón → regularidad reconocible\nPatrón de diseño → solución reutilizable en un contexto\nPatrón agéntico → estructura para resolver problemas del agente",
+            "highlightLines": []
+          },
+          "expected": "Puedes explicar el problema antes de elegir un SDK o un modelo."
+        },
+        {
+          "id": "falta-contexto",
+          "title": "Detecta lo que el modelo no sabe",
+          "body": [
+            "Pedir los cinco productos más vendidos exige datos reales del negocio y un criterio de orden. Si no se los entregas ni das acceso a una herramienta, el modelo carece de esa información.",
+            "Un resultado con apariencia convincente no demuestra que haya consultado tus ventas. En futuras lecciones Tool Use nos servirá para conectar una consulta definida con datos verificables."
+          ],
+          "code": {
+            "file": "Petición sin datos",
+            "language": "text",
+            "after": "Solicitud: calcula el descuento de los cinco productos más vendidos.\nFalta: catálogo, precios, ventas y período.\nCriterio: usar únicamente datos reales disponibles.\nSi faltan: solicitar información o declarar la limitación.",
+            "highlightLines": []
+          },
+          "expected": "Identificas el dato ausente y evitas confundir una suposición con una consulta al negocio."
+        },
+        {
+          "id": "elegir-estrategia",
+          "title": "Relaciona cada patrón con su necesidad",
+          "body": [
+            "Tool Use aporta acceso a operaciones o datos definidos. ReAct organiza ciclos de decisión, acción y observación. Human in the loop introduce una revisión humana antes de ejecutar una acción que necesita aprobación.",
+            "También hay controles de ejecución. Un límite de pasos acota la duración de un ciclo; un circuit breaker suspende llamadas tras fallos repetidos. Son mecanismos distintos que pueden complementarse."
+          ],
+          "code": {
+            "file": "Estrategias por problema",
+            "language": "text",
+            "after": "Faltan datos reales → Tool Use\nHay que observar y volver a decidir → ReAct\nEnviar algo necesita aprobación → Human in the loop\nEl ciclo puede seguir indefinidamente → límite de pasos\nEl servicio falla repetidamente → circuit breaker",
+            "highlightLines": []
+          },
+          "expected": "Eliges una estrategia por su función y distingues un límite de iteraciones de un circuit breaker.",
+          "note": "Estos patrones se presentan como conceptos. El proyecto disponible aún está en la preparación y verificación de la conexión."
+        },
+        {
+          "id": "comparar",
+          "title": "Define cómo sabrás si mejoró",
+          "body": [
+            "Compara la misma tarea antes y después de incorporar una estrategia. Registra el resultado esperado, el observado y los recursos consumidos.",
+            "Un saludo correcto solo prueba una llamada. Para evaluar un patrón necesitarás casos donde sus decisiones importen: datos ausentes, herramientas que fallan o acciones pendientes de aprobación."
+          ],
+          "code": {
+            "file": "Ficha de evaluación",
+            "language": "text",
+            "after": "Tarea: responder con cinco productos de datos conocidos.\nAntes: respuesta sin acceso al catálogo.\nCambio propuesto: consulta mediante herramienta.\nDespués: contrastar productos y precios con la fuente.\nRegistrar: aciertos, fallos, duración y tokens.",
+            "highlightLines": []
+          },
+          "expected": "Tienes una comparación concreta sin afirmar que un patrón siempre garantiza el éxito."
+        }
+      ],
+      "exercise": {
+        "prompt": "Un agente redacta y envía un correo al cliente sin mostrarte el borrador. Explica dónde introducirías una revisión humana y qué podría hacer antes de ella.",
+        "hint": "Separa preparar el contenido de realizar el envío.",
+        "solution": "Puede redactar y revisar el borrador, pero debe detenerse antes de enviarlo y esperar una aprobación explícita. Ese punto de control corresponde a Human in the loop."
+      },
+      "questions": [
+        {
+          "id": "datos",
+          "question": "¿Qué soluciona mejor que un modelo no tenga acceso a tu catálogo?",
+          "options": [
+            "Cambiar siempre al modelo más caro.",
+            "Dar datos o una herramienta de consulta.",
+            "Pedir una respuesta más larga."
+          ],
+          "correctIndex": 1,
+          "explanation": "Cambiar de modelo no proporciona automáticamente los datos privados de tu negocio."
+        },
+        {
+          "id": "limites",
+          "question": "¿Qué diferencia hay entre un límite de pasos y un circuit breaker?",
+          "options": [
+            "Ambos significan exactamente lo mismo.",
+            "El límite acota iteraciones; el circuit breaker responde a fallos repetidos.",
+            "El circuit breaker obliga a que el modelo acierte."
+          ],
+          "correctIndex": 1,
+          "explanation": "Acotar un ciclo y proteger un servicio ante fallos son controles con disparadores distintos."
+        }
+      ]
+    },
+    {
+      "slug": "estructura-del-proyecto",
+      "title": "Construye la base del proyecto",
+      "summary": "Prepara una versión mínima del proyecto de estudio y sigue su recorrido de ejecución.",
+      "minutes": 20,
+      "chapter": "3. Proyecto base",
+      "sourcePaths": [
+        "session3/agentic-patterns/package.json",
+        "session3/agentic-patterns/tsconfig.json",
+        "session3/agentic-patterns/src/main.ts",
+        "session3/agentic-patterns/src/helpers/selected-model.ts"
+      ],
+      "objectives": [
+        "Crear una práctica sin depender de un repositorio público.",
+        "Entender los scripts de desarrollo y compilación.",
+        "Localizar entrada, acción y selección del modelo."
+      ],
+      "steps": [
+        {
+          "id": "paquetes",
+          "title": "Define el proyecto y sus scripts",
+          "body": [
+            "Crea package.json dentro de tu carpeta de práctica y copia este contenido. Después ejecuta npm install en la terminal. Hemos conservado las versiones declaradas por la base de estudio y reducido los proveedores al que usaremos.",
+            "dev ejecuta src/main.ts una vez con tsx. watch vuelve a ejecutarlo al cambiar archivos. build compila con TypeScript y start ejecuta la salida de dist. El proyecto del curso tiene más adaptadores; esta práctica solo necesita ai y @ai-sdk/groq."
+          ],
+          "code": {
+            "file": "package.json",
+            "language": "json",
+            "after": "{\n  \"name\": \"agentic-patterns-practica\",\n  \"private\": true,\n  \"type\": \"module\",\n  \"scripts\": {\n    \"build\": \"tsc\",\n    \"start\": \"node --env-file=.env dist/main.js\",\n    \"dev\": \"tsx --env-file=.env src/main.ts\",\n    \"watch\": \"tsx watch --env-file=.env src/main.ts\"\n  },\n  \"dependencies\": {\n    \"ai\": \"7.0.59\",\n    \"@ai-sdk/groq\": \"4.0.27\"\n  },\n  \"devDependencies\": {\n    \"@types/node\": \"26.2.0\",\n    \"tsx\": \"4.23.12\",\n    \"typescript\": \"7.0.2\"\n  }\n}",
+            "highlightLines": []
+          },
+          "expected": "npm install instala las dependencias. Aún no ejecutes dev: primero falta crear los archivos de las próximas lecciones.",
+          "note": "Estos comandos se realizan en tu copia de práctica. No necesitas instalar el AI SDK dentro del portafolio."
+        },
+        {
+          "id": "typescript",
+          "title": "Configura cómo se compila TypeScript",
+          "body": [
+            "Crea tsconfig.json junto a package.json. src contiene los archivos que editas y dist recibe el JavaScript compilado.",
+            "La base usa módulos ESM con type: module y resolución Node16. Por eso los imports internos escritos en TypeScript terminan en .js: apuntan a la forma que tendrán los archivos al compilar.",
+            "Declaramos types: [\"node\"] para que TypeScript reconozca los globales de Node.js, como process, usados en el manejo de errores."
+          ],
+          "code": {
+            "file": "tsconfig.json",
+            "language": "json",
+            "after": "{\n  \"compilerOptions\": {\n    \"target\": \"ES2022\",\n    \"module\": \"Node16\",\n    \"moduleResolution\": \"Node16\",\n    \"rootDir\": \"src\",\n    \"outDir\": \"dist\",\n    \"strict\": true,\n    \"skipLibCheck\": true,\n    \"types\": [\n      \"node\"\n    ]\n  },\n  \"include\": [\n    \"src/**/*.ts\"\n  ]\n}",
+            "highlightLines": []
+          },
+          "expected": "La configuración incluye src/**/*.ts, activa strict y define dist como salida."
+        },
+        {
+          "id": "recorrido",
+          "title": "Dibuja el recorrido antes de ejecutar",
+          "body": [
+            "Crea las carpetas src/actions y src/helpers. Las siguientes lecciones aportan el contenido de cada archivo; este mapa muestra cómo se conectan.",
+            "main.ts decide qué práctica ejecutar. La acción hace la llamada. selected-model.ts concentra el proveedor elegido para poder cambiarlo sin editar cada acción."
+          ],
+          "code": {
+            "file": "Estructura de la práctica",
+            "language": "text",
+            "after": "agentic-patterns-practica/\n├── package.json\n├── tsconfig.json\n├── .env\n└── src/\n    ├── main.ts\n    ├── actions/get-message-model.ts\n    └── helpers/selected-model.ts\n\nmain.ts → acción → modelo → proveedor",
+            "highlightLines": []
+          },
+          "expected": "Puedes ubicar dónde cambiar la práctica y dónde cambiar el proveedor."
+        },
+        {
+          "id": "base-original",
+          "title": "Reconoce las ayudas del proyecto de estudio",
+          "body": [
+            "La base disponible también incluye helpers/index.ts para reexportar utilidades, string-colors.ts para colorear la consola y create-tracer.ts para observar pasos.",
+            "Los colores son presentación. Una traza registra lo que la ejecución expone; no es una prueba de corrección ni una ventana completa al razonamiento del modelo. En esta práctica utilizaremos console.log normal para mantener los ejemplos independientes."
+          ],
+          "code": {
+            "file": "Ayudas de la base",
+            "language": "text",
+            "after": "helpers/index.ts → reexporta utilidades\nhelpers/string-colors.ts → presentación en consola\nhelpers/create-tracer.ts → observación de pasos\nactions/get-message-model.ts → llamada, traza y errores",
+            "highlightLines": []
+          },
+          "expected": "Distingues las piezas necesarias para conectar un modelo de las ayudas para estudiar su ejecución."
+        }
+      ],
+      "exercise": {
+        "prompt": "Explica dónde harías cada cambio: ejecutar una práctica diferente, elegir otro modelo y ajustar la carpeta de salida.",
+        "hint": "Sigue las responsabilidades del mapa: entrada, proveedor y compilación.",
+        "solution": "Selecciona la práctica en src/main.ts; cambia el modelo en src/helpers/selected-model.ts; cambia outDir en tsconfig.json. Mantén esos motivos separados."
+      },
+      "questions": [
+        {
+          "id": "entrada",
+          "question": "¿Qué archivo selecciona la práctica que se ejecuta?",
+          "options": [
+            "src/main.ts.",
+            "node_modules/ai.",
+            "dist antes de compilar."
+          ],
+          "correctIndex": 0,
+          "explanation": "El script de desarrollo ejecuta src/main.ts, que importa y llama a la acción elegida."
+        },
+        {
+          "id": "compilar",
+          "question": "¿Qué hace npm run build en esta base?",
+          "options": [
+            "Publica el curso en GitHub.",
+            "Compila src y escribe JavaScript en dist.",
+            "Llama automáticamente a todos los proveedores."
+          ],
+          "correctIndex": 1,
+          "explanation": "El script build ejecuta tsc. La ejecución del modelo ocurre al arrancar la práctica."
+        }
+      ]
+    },
+    {
+      "slug": "primera-llamada-al-modelo",
+      "title": "Haz tu primera llamada al modelo",
+      "summary": "Configura Groq y completa una prueba pequeña con generateText y async/await.",
+      "minutes": 20,
+      "chapter": "3. Proyecto base",
+      "sourcePaths": [
+        "session3/agentic-patterns/src/helpers/selected-model.ts",
+        "session3/agentic-patterns/src/actions/get-message-model.ts",
+        "session3/agentic-patterns/src/main.ts",
+        "session3/agentic-patterns/README.md"
+      ],
+      "objectives": [
+        "Separar credenciales, selección del modelo y prompt.",
+        "Leer text y usage de una respuesta.",
+        "Ejecutar la práctica y reconocer el alcance de una prueba de conexión."
+      ],
+      "steps": [
+        {
+          "id": "credencial",
+          "title": "Configura la credencial fuera del código",
+          "body": [
+            "En la raíz de tu práctica, crea .env y añade tu propia credencial de Groq. El texto mostrado es un marcador: no es una llave válida. El adaptador lee GROQ_API_KEY del entorno.",
+            "Añade también un .gitignore con .env, node_modules/ y dist/. No incluyas credenciales en capturas o ejercicios. Revisa la consola del proveedor para conocer el acceso API y sus condiciones actuales."
+          ],
+          "code": {
+            "file": ".env",
+            "language": "dotenv",
+            "after": "GROQ_API_KEY=REEMPLAZA_CON_TU_CREDENCIAL",
+            "highlightLines": []
+          },
+          "expected": "El archivo .env existe en tu práctica y contiene tu credencial. Los scripts lo cargan mediante --env-file=.env.",
+          "note": "La web de la tutoría solo muestra texto y código. La llamada al proveedor se hará desde tu práctica local, no desde el navegador del portafolio."
+        },
+        {
+          "id": "seleccionar-modelo",
+          "title": "Centraliza el proveedor elegido",
+          "body": [
+            "Crea src/helpers/selected-model.ts. Este es el adaptador y el identificador seleccionados en el material actual.",
+            "Cambiar el identificador cambia el modelo que solicita tu aplicación. Si el proveedor lo retira o tu cuenta no tiene acceso, verifica su catálogo; el nombre que figura en un ejemplo no garantiza disponibilidad permanente."
+          ],
+          "code": {
+            "file": "src/helpers/selected-model.ts",
+            "language": "typescript",
+            "after": "import { groq } from '@ai-sdk/groq';\n\nexport const model = groq('openai/gpt-oss-20b');",
+            "highlightLines": []
+          },
+          "expected": "La acción podrá importar model sin conocer el identificador concreto en cada llamada."
+        },
+        {
+          "id": "generar",
+          "title": "Envía una instrucción pequeña",
+          "body": [
+            "Crea src/actions/get-message-model.ts. generateText recibe model y prompt; await espera a que la promesa se resuelva antes de usar text.",
+            "usage permite observar el consumo comunicado por el proveedor. Cuando totalTokens no está disponible, mostramos ese estado en lugar de inventar un cero. Mantén el prompt pequeño para establecer una primera referencia."
+          ],
+          "code": {
+            "file": "src/actions/get-message-model.ts",
+            "language": "typescript",
+            "after": "import { generateText } from 'ai';\nimport { model } from '../helpers/selected-model.js';\n\nexport async function getMessageFromModel() {\n  const { text, usage } = await generateText({\n    model,\n    prompt: 'Responde solamente con: \"OK, todo listo!\"',\n  });\n\n  console.log('Respuesta del modelo:', text.trim());\n  console.log('Tokens:', usage.totalTokens ?? 'No disponible');\n}",
+            "highlightLines": [
+              5,
+              6,
+              7,
+              10,
+              11
+            ]
+          },
+          "expected": "Con credenciales, red y modelo disponibles, la consola muestra la respuesta y los tokens reportados. Comprueba si el texto cumple la instrucción; no lo asumas."
+        },
+        {
+          "id": "ejecutar",
+          "title": "Conecta la entrada y ejecuta",
+          "body": [
+            "Crea src/main.ts con esta llamada. Después, desde la raíz de la práctica, ejecuta npm run build y npm run dev.",
+            "El build valida y compila. dev ejecuta TypeScript y hace la petición real. Una respuesta correcta demuestra que la conexión funciona para este caso; todavía no hemos añadido herramientas ni un ciclo agéntico."
+          ],
+          "code": {
+            "file": "src/main.ts",
+            "language": "typescript",
+            "after": "import { getMessageFromModel } from './actions/get-message-model.js';\n\nawait getMessageFromModel();",
+            "highlightLines": []
+          },
+          "expected": "El build termina sin errores. dev imprime la respuesta si la llamada tiene éxito; si falla, la lección de errores te ayuda a ubicar el problema."
+        }
+      ],
+      "exercise": {
+        "prompt": "Cambia la instrucción por “Responde solamente con: conexión verificada”. Ejecuta de nuevo y compara el texto recibido con lo solicitado.",
+        "hint": "Cambia únicamente prompt en la acción y conserva el modelo y el punto de entrada.",
+        "solution": "Tras cambiar prompt, ejecuta npm run dev. Registra la respuesta real y verifica el cumplimiento; el texto del modelo puede variar y una sola prueba no evalúa su calidad en otras tareas."
+      },
+      "questions": [
+        {
+          "id": "await",
+          "question": "¿Por qué usamos await delante de generateText?",
+          "options": [
+            "Para esperar la respuesta antes de leer text.",
+            "Para garantizar que no hay consumo.",
+            "Para descargar el modelo a nuestro equipo."
+          ],
+          "correctIndex": 0,
+          "explanation": "La llamada es asíncrona. await permite seguir con el resultado cuando la promesa se resuelve."
+        },
+        {
+          "id": "tokens",
+          "question": "¿Qué significa que totalTokens sea undefined?",
+          "options": [
+            "La llamada fue necesariamente gratuita.",
+            "El valor no está disponible en esa respuesta.",
+            "El modelo siempre consumió cero tokens."
+          ],
+          "correctIndex": 1,
+          "explanation": "La ausencia de información de uso no demuestra un consumo cero."
+        }
+      ]
+    },
+    {
+      "slug": "observa-la-ejecucion",
+      "title": "Observa la ejecución con una traza",
+      "summary": "Registra pasos, herramientas y tokens sin confundir observación con una evaluación del resultado.",
+      "minutes": 15,
+      "chapter": "3. Proyecto base",
+      "sourcePaths": [
+        "session3/agentic-patterns/src/helpers/create-tracer.ts",
+        "session3/agentic-patterns/src/actions/get-message-model.ts"
+      ],
+      "objectives": [
+        "Observar los eventos de fin de paso.",
+        "Separar una traza de una evaluación de calidad.",
+        "Actualizar el callback de observación para AI SDK 7."
+      ],
+      "steps": [
+        {
+          "id": "observar",
+          "title": "Decide qué necesitas registrar",
+          "body": [
+            "El helper createTracer de la base incrementa un contador de pasos, acumula tokens e imprime herramientas y resultados expuestos por la ejecución.",
+            "La traza permite entender qué ocurrió. No demuestra por sí sola que el modelo haya elegido bien ni revela todo su razonamiento interno. Para comparar resultados necesitas además un criterio de aceptación."
+          ],
+          "code": {
+            "file": "Datos de una traza",
+            "language": "text",
+            "after": "steps → pasos completados\ntotalTokens → uso comunicado\ntoolCalls → herramientas solicitadas\ntoolResults → resultados recibidos\ntext → salida expuesta por el modelo",
+            "highlightLines": []
+          },
+          "expected": "Sabes qué responde cada dato y qué preguntas siguen necesitando una comprobación propia."
+        },
+        {
+          "id": "evento-actual",
+          "title": "Usa el callback vigente",
+          "body": [
+            "En el código local encontrarás onStepFinish. La documentación de AI SDK 7 lo conserva como alias deprecado y recomienda onStepEnd para código nuevo.",
+            "La función de observación recibe datos del paso. Este ejemplo muestra el cambio del nombre del callback sin convertir la llamada en un agente con herramientas."
+          ],
+          "code": {
+            "file": "Callback de generateText",
+            "language": "typescript",
+            "after": "onStepEnd({ usage }) {\n  console.log(\"Tokens del paso:\", usage.totalTokens ?? \"No disponible\");\n}",
+            "highlightLines": [],
+            "before": "onStepFinish({ usage }) {\n  console.log(\"Tokens del paso:\", usage.totalTokens ?? \"No disponible\");\n}"
+          },
+          "expected": "La observación usa onStepEnd. Este fragmento se coloca dentro del objeto de opciones de generateText, no se ejecuta por separado.",
+          "note": "Referencia: ai-sdk.dev/docs/migration-guides/migration-guide-7-0. La adaptación se aplica al ejemplo de la tutoría; no modifica el proyecto fuente."
+        },
+        {
+          "id": "traza-basica",
+          "title": "Añade una variante observable",
+          "body": [
+            "Añade esta función a tu archivo de acciones. Si conservas los imports de la lección anterior, no los dupliques.",
+            "El contador suma pasos y herramientas. Si un paso no informa tokens, el resumen indica que el total no está disponible. Registrar cero herramientas es esperable: esta prueba aún no declara ninguna."
+          ],
+          "code": {
+            "file": "src/actions/get-message-model.ts",
+            "language": "typescript",
+            "after": "import { generateText } from 'ai';\nimport { model } from '../helpers/selected-model.js';\n\nexport async function getMessageFromModelWithTrace() {\n  let steps = 0;\n  let totalTokens = 0;\n  let usageAvailable = true;\n\n  const { text } = await generateText({\n    model,\n    prompt: 'Responde solamente con: \"OK, todo listo!\"',\n    onStepEnd({ usage, toolCalls, toolResults }) {\n      steps += 1;\n      if (usage.totalTokens === undefined) usageAvailable = false;\n      totalTokens += usage.totalTokens ?? 0;\n      console.log('Paso:', steps);\n      console.log('Herramientas solicitadas:', toolCalls.length);\n      console.log('Resultados de herramientas:', toolResults.length);\n    },\n  });\n\n  const summary = {\n    steps,\n    totalTokens: usageAvailable ? totalTokens : 'No disponible',\n  };\n  console.log('Respuesta:', text.trim());\n  console.table(summary);\n  return summary;\n}",
+            "highlightLines": []
+          },
+          "expected": "La consola muestra los pasos y un resumen. Los números dependen de la ejecución; no hay un total de tokens fijo que debas obtener."
+        },
+        {
+          "id": "activar-traza",
+          "title": "Selecciona la variante en main",
+          "body": [
+            "Reemplaza el punto de entrada por esta variante y ejecuta npm run build y npm run dev.",
+            "Compara la respuesta con la llamada básica y guarda una observación: ¿cuántos pasos expuso?, ¿reportó tokens?, ¿hubo herramientas? Cambiar la función ejecutada no exige cambiar el proveedor."
+          ],
+          "code": {
+            "file": "src/main.ts",
+            "language": "typescript",
+            "after": "import { getMessageFromModelWithTrace } from './actions/get-message-model.js';\n\nawait getMessageFromModelWithTrace();",
+            "highlightLines": []
+          },
+          "expected": "Se ejecuta la variante con traza y puedes explicar su resumen."
+        }
+      ],
+      "exercise": {
+        "prompt": "Ejecuta la variante con traza y escribe dos cosas que puedes comprobar con ella y una que no demuestra.",
+        "hint": "Distingue datos de ejecución de exactitud del resultado.",
+        "solution": "Puedes contar los pasos observados y leer el consumo reportado. La traza no garantiza que la respuesta sea correcta ni que un futuro patrón sea eficaz."
+      },
+      "questions": [
+        {
+          "id": "callback",
+          "question": "¿Qué callback se recomienda para ejemplos nuevos con AI SDK 7?",
+          "options": [
+            "onStepEnd.",
+            "onStepFinish como única opción vigente.",
+            "onClick."
+          ],
+          "correctIndex": 0,
+          "explanation": "onStepFinish se mantiene como alias deprecado; la opción actual es onStepEnd."
+        },
+        {
+          "id": "herramientas",
+          "question": "¿Qué indica una traza con cero herramientas en nuestra prueba básica?",
+          "options": [
+            "Que necesariamente hubo un error.",
+            "Que no se observaron herramientas; esta prueba no declara ninguna.",
+            "Que el modelo no consumió recursos."
+          ],
+          "correctIndex": 1,
+          "explanation": "Una llamada de texto sencilla no requiere herramientas. La traza describe la ejecución, no impone un patrón."
+        }
+      ]
+    },
+    {
+      "slug": "maneja-los-errores",
+      "title": "Interpreta los errores de la conexión",
+      "summary": "Distingue credenciales, límites, modelo y red antes de intentar otra llamada.",
+      "minutes": 15,
+      "chapter": "3. Proyecto base",
+      "sourcePaths": [
+        "session3/agentic-patterns/src/actions/get-message-model.ts"
+      ],
+      "objectives": [
+        "Clasificar errores HTTP sin asumir que todos son de credenciales.",
+        "Reconocer que un fallo de red puede no tener statusCode.",
+        "Mantener visible el fallo y elegir una corrección concreta."
+      ],
+      "steps": [
+        {
+          "id": "clasificar",
+          "title": "Lee la señal que realmente tienes",
+          "body": [
+            "La base incluye getMessageFromModelFailSafe con mensajes para credenciales, límites, modelo y red. Un error HTTP y un fallo de conexión son señales distintas.",
+            "401 o 403 orientan a autenticación o permisos; 429 puede indicar cuota o límite de solicitudes; 404 orienta al recurso o modelo; los 5xx indican errores de servidor. El mensaje concreto del proveedor puede añadir contexto."
+          ],
+          "code": {
+            "file": "Mapa de diagnóstico",
+            "language": "text",
+            "after": "401 / 403 → credencial o permisos\n429 → cuota o límite de solicitudes\n404 → recurso, modelo o URL\n5xx → error del servidor\nSin HTTP → investigar red y configuración",
+            "highlightLines": []
+          },
+          "expected": "No tratas todos los fallos como si fueran la misma causa ni das un diagnóstico definitivo solo por el número."
+        },
+        {
+          "id": "capturar",
+          "title": "Maneja la llamada sin ocultar el fallo",
+          "body": [
+            "Añade esta variante al archivo de acciones. Evita repetir los imports si ya los tienes. APICallError.isInstance permite leer statusCode cuando el error pertenece a esa clase.",
+            "El catch recibe unknown. Conservamos el fallo con process.exitCode = 1 para que terminar la función no se interprete como una ejecución satisfactoria. El ejemplo muestra mensajes acotados sin volcar credenciales ni respuestas completas del proveedor."
+          ],
+          "code": {
+            "file": "src/actions/get-message-model.ts",
+            "language": "typescript",
+            "after": "import { APICallError, generateText } from 'ai';\nimport { model } from '../helpers/selected-model.js';\n\nexport async function getMessageFromModelFailSafe() {\n  try {\n    const { text } = await generateText({\n      model,\n      prompt: 'Responde solamente con: \"OK, todo listo!\"',\n    });\n    console.log('Respuesta:', text.trim());\n  } catch (error: unknown) {\n    if (APICallError.isInstance(error)) {\n      const status = error.statusCode;\n      if (status === 401 || status === 403) {\n        console.error('Revisa la credencial y sus permisos.');\n      } else if (status === 429) {\n        console.error('Revisa la cuota o el límite de solicitudes.');\n      } else if (status === 404) {\n        console.error('Revisa el modelo y la URL del proveedor.');\n      } else if (status !== undefined && status >= 500) {\n        console.error('El proveedor respondió con un error de servidor.');\n      } else {\n        console.error('La petición falló. Revisa su configuración.');\n      }\n    } else {\n      console.error('No se completó la llamada. Revisa red y configuración.');\n    }\n    process.exitCode = 1;\n  }\n}",
+            "highlightLines": []
+          },
+          "expected": "Los errores reconocidos imprimen una orientación. Ante un fallo, el proceso termina con un código de salida distinto de cero."
+        },
+        {
+          "id": "red",
+          "title": "Distingue red de respuesta HTTP",
+          "body": [
+            "Si no hay una respuesta HTTP, puede haber un problema de DNS, un servicio local detenido o una dirección equivocada. En la base de estudio se revisan códigos como ENOTFOUND y ECONNREFUSED.",
+            "Un código puede estar dentro de cause, pero no todos los errores comparten esa estructura. No fuerces un statusCode ni conviertas cualquier error a any para asumirlo. Empieza por confirmar dirección, servicio y conectividad."
+          ],
+          "code": {
+            "file": "Investigación de red",
+            "language": "text",
+            "after": "ENOTFOUND → revisar dominio y conectividad\nECONNREFUSED → revisar dirección y servicio escuchando\nSi se usa un proveedor local → comprobar que esté iniciado\nSi no hay código conocido → conservar el fallo y revisar configuración",
+            "highlightLines": []
+          },
+          "expected": "Puedes escoger el siguiente chequeo sin fingir que el error pertenece al proveedor HTTP."
+        },
+        {
+          "id": "activar-errores",
+          "title": "Ejecuta la variante de diagnóstico",
+          "body": [
+            "Reemplaza main.ts por esta variante. Ejecuta npm run build y después npm run dev.",
+            "Para practicar sin realizar nuevas llamadas puedes usar el mapa anterior y clasificar casos escritos. Cuando haya un error real, corrige su causa antes de repetir; esta base aún no implementa circuit breaker ni una política propia de reintentos."
+          ],
+          "code": {
+            "file": "src/main.ts",
+            "language": "typescript",
+            "after": "import { getMessageFromModelFailSafe } from './actions/get-message-model.js';\n\nawait getMessageFromModelFailSafe();",
+            "highlightLines": []
+          },
+          "expected": "La práctica imprime la respuesta o informa el fallo. Puedes explicar qué revisarías según la señal observada."
+        }
+      ],
+      "exercise": {
+        "prompt": "Clasifica estos casos y propón una comprobación: 403, 429 y ECONNREFUSED. Explica por qué no resolverías todos regenerando la API key.",
+        "hint": "Permisos, límites y disponibilidad de un servicio pertenecen a problemas diferentes.",
+        "solution": "Para 403 revisa permisos y credencial. Para 429 consulta cuota y límites antes de otra llamada. Para ECONNREFUSED revisa dirección y servicio. Renovar una llave no inicia un servicio ni cambia automáticamente la cuota."
+      },
+      "questions": [
+        {
+          "id": "http",
+          "question": "¿Todo fallo de conexión contiene statusCode?",
+          "options": [
+            "Sí, siempre es 401.",
+            "No: un fallo de red puede no tener respuesta HTTP.",
+            "Solo si el texto del prompt es largo."
+          ],
+          "correctIndex": 1,
+          "explanation": "Sin respuesta del servidor puede haber un error de red en lugar de un estado HTTP."
+        },
+        {
+          "id": "salida",
+          "question": "¿Para qué establecemos process.exitCode = 1 dentro del catch?",
+          "options": [
+            "Para señalar que la ejecución falló.",
+            "Para ocultar el error a la terminal.",
+            "Para recargar automáticamente la cuota."
+          ],
+          "correctIndex": 0,
+          "explanation": "Capturar un error no debe convertir un fallo en una ejecución aparentemente correcta."
+        }
+      ]
+    }
+  ],
+  "roadmap": [
+    {
+      "title": "Tool Use",
+      "summary": "Conectar operaciones y datos reales para resolver tareas que necesitan información externa."
+    },
+    {
+      "title": "ReAct y controles de ejecución",
+      "summary": "Observar resultados y volver a decidir con límites de pasos y manejo de fallos."
+    },
+    {
+      "title": "Human in the loop",
+      "summary": "Pedir una revisión humana antes de ejecutar acciones que requieren aprobación."
+    },
+    {
+      "title": "Otros proveedores y Ollama",
+      "summary": "Preparar prácticas de cambio de proveedor y ejecución local de modelos."
+    }
+  ],
+  "repositoryUrl": "https://github.com/My-free-time/patrones-diseno-agentico"
+}

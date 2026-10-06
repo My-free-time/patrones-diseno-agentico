@@ -1,0 +1,24 @@
+# Credenciales locales: solo se permite la plantilla vacía revisada.
+.env
+.env.*
+.env~
+!.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+*.jks
+credentials.json
+service-account*.json
+
+# Dependencias, herramientas locales y resultados.
+node_modules/
+dist/
+build/
+coverage/
+.local-tools/
+*.tsbuildinfo
+*.log
+.DS_Store
+.agents/
+.cursor/
