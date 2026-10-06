@@ -7,7 +7,7 @@
   "description": "Una ruta de estudio construida con lo que llevo avanzado: entorno, conceptos y proyecto base. Adapto mis apuntes del curso de Fernando Herrera (DevTalles) a explicaciones y prácticas propias. Por ahora comprobamos la conexión; las implementaciones de patrones llegarán a medida que avance.",
   "audience": "Para quienes ya han programado y pueden leer funciones, objetos y async/await en JavaScript o TypeScript.",
   "topics": ["TypeScript", "Agentes de IA", "AI SDK", "Node.js", "Groq"],
-  "updatedAt": "2026-10-06T18:00:00.000Z",
+  "updatedAt": "2026-10-06T23:00:00.000Z",
   "prerequisites": [
     "Variables, funciones, objetos y promesas de JavaScript o TypeScript.",
     "Un editor, una terminal y Node.js con npm; Git para guardar tus cambios.",
@@ -340,9 +340,10 @@
       "slug": "primera-llamada-al-modelo",
       "title": "Haz tu primera llamada al modelo",
       "summary": "Configura Groq y completa una prueba pequeña con generateText y async/await.",
-      "minutes": 20,
+      "minutes": 25,
       "chapter": "3. Proyecto base",
       "sourcePaths": [
+        "session3/proveedor:groq.md",
         "session3/agentic-patterns/src/helpers/selected-model.ts",
         "session3/agentic-patterns/src/actions/get-message-model.ts",
         "session3/agentic-patterns/src/main.ts",
@@ -355,11 +356,26 @@
       ],
       "steps": [
         {
+          "id": "crear-clave-groq",
+          "title": "Prepara tu acceso a Groq",
+          "body": [
+            "Abre la consola oficial de Groq y entra en API Keys. Si no tienes cuenta, crea una siguiendo el proceso del proveedor. Para esta práctica basta un proveedor; no necesitas configurar todos los adaptadores.",
+            "Crea una clave con un nombre que identifique esta práctica y una expiración adecuada. Guarda el valor únicamente en tu .env local. Consulta las cuotas, condiciones y modelos disponibles en tu cuenta: los ejemplos del curso no garantizan acceso o gratuidad permanente."
+          ],
+          "code": {
+            "file": "Lista de preparación",
+            "language": "text",
+            "after": "Proveedor: Groq\nConsola: https://console.groq.com/keys\nVariable local: GROQ_API_KEY\nPrueba inicial: OK, todo listo!",
+            "highlightLines": []
+          },
+          "expected": "Puedes identificar dónde crear tu clave y dónde guardarla sin compartir su valor."
+        },
+        {
           "id": "credencial",
           "title": "Configura la credencial fuera del código",
           "body": [
-            "En la raíz de tu práctica, crea .env y añade tu propia credencial de Groq. El texto mostrado es un marcador: no es una llave válida. El adaptador lee GROQ_API_KEY del entorno.",
-            "Añade también un .gitignore con .env, node_modules/ y dist/. No incluyas credenciales en capturas o ejercicios. Revisa la consola del proveedor para conocer el acceso API y sus condiciones actuales."
+            "En la raíz de tu práctica, crea .env y añade tu propia credencial de Groq. Si clonaste el proyecto publicado, copia .env.example a .env. Completa GROQ_API_KEY solo en .env; deja vacía la plantilla pública. El adaptador lee esta variable del entorno.",
+            "Revisa que el valor esté completo y sin espacios accidentales. Mantén .env y sus variantes fuera de Git, junto con node_modules/ y dist/. No incluyas credenciales en capturas, apuntes o ejercicios."
           ],
           "code": {
             "file": ".env",
@@ -414,10 +430,27 @@
             "highlightLines": []
           },
           "expected": "El build termina sin errores. dev imprime la respuesta si la llamada tiene éxito; si falla, la lección de errores te ayuda a ubicar el problema."
+        },
+        {
+          "id": "diagnosticar-conexion-groq",
+          "title": "Comprueba la conexión y diagnostica un fallo",
+          "body": [
+            "Ejecuta npm run dev y comprueba la respuesta real. El prompt pide “OK, todo listo!”; el color del texto depende de la variante que ejecutes y no demuestra por sí mismo que la configuración sea correcta.",
+            "Si falla, revisa primero que los scripts carguen .env, que exista GROQ_API_KEY y que selected-model.ts use groq con un modelo disponible. La variante getMessageFromModelFailSafe del proyecto base ayuda a distinguir credenciales, permisos, cuotas y fallos de red. La lección Maneja los errores muestra cómo implementarla en tu práctica mínima.",
+            "No provoques un fallo publicando ni mostrando una clave. Ante un problema de permisos revisa la credencial y la cuenta; ante límites de uso consulta las cuotas antes de repetir. Capturar un error no corrige su causa."
+          ],
+          "code": {
+            "file": "src/main.ts (variante de diagnóstico)",
+            "language": "typescript",
+            "after": "import { getMessageFromModelFailSafe } from './actions/get-message-model.js';\n\nawait getMessageFromModelFailSafe();",
+            "highlightLines": []
+          },
+          "expected": "Puedes explicar qué revisar si la llamada falla y volver a la función normal cuando la conexión esté verificada.",
+          "note": "Usa esta entrada después de tener la función FailSafe del proyecto base o de implementarla en la lección de errores. No está definida todavía en la acción mínima anterior."
         }
       ],
       "exercise": {
-        "prompt": "Cambia la instrucción por “Responde solamente con: conexión verificada”. Ejecuta de nuevo y compara el texto recibido con lo solicitado.",
+        "prompt": "Cambia la instrucción por “Responde solamente con: conexión verificada”. Ejecuta de nuevo y compara el texto recibido con lo solicitado. Antes, verifica que .env esté excluido de Git y que .env.example permanezca sin claves.",
         "hint": "Cambia únicamente prompt en la acción y conserva el modelo y el punto de entrada.",
         "solution": "Tras cambiar prompt, ejecuta npm run dev. Registra la respuesta real y verifica el cumplimiento; el texto del modelo puede variar y una sola prueba no evalúa su calidad en otras tareas."
       },
@@ -443,6 +476,17 @@
           ],
           "correctIndex": 1,
           "explanation": "La ausencia de información de uso no demuestra un consumo cero."
+        },
+        {
+          "id": "plantilla-segura",
+          "question": "¿Dónde guardas la clave real de Groq?",
+          "options": [
+            "En .env.example para compartir la configuración.",
+            "En el .env local excluido de Git.",
+            "Dentro de selected-model.ts."
+          ],
+          "correctIndex": 1,
+          "explanation": "La plantilla pública contiene valores vacíos; la credencial real permanece en el entorno local."
         }
       ]
     },
@@ -562,7 +606,8 @@
       "minutes": 15,
       "chapter": "3. Proyecto base",
       "sourcePaths": [
-        "session3/agentic-patterns/src/actions/get-message-model.ts"
+        "session3/agentic-patterns/src/actions/get-message-model.ts",
+        "session3/proveedor:groq.md"
       ],
       "objectives": [
         "Clasificar errores HTTP sin asumir que todos son de credenciales.",
