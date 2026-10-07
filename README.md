@@ -2,10 +2,10 @@
 
 Apuntes y laboratorio guiado de Victor Flores mientras estudia el curso de
 Fernando Herrera (DevTalles). El material de estudio está atribuido a su autor;
-las siete lecciones guiadas adaptan lo trabajado hasta ahora: entorno, conceptos,
-estructura y archivos del proyecto, primera llamada, trazas, errores y Anthropic.
-Basta con un proveedor configurado; Anthropic es una alternativa opcional a Groq. Los próximos patrones
-se agregan al avanzar en el curso.
+las ocho lecciones guiadas adaptan lo trabajado hasta ahora: entorno, conceptos,
+estructura y archivos del proyecto, primera llamada, trazas, errores, Anthropic y OpenAI.
+Basta con un proveedor configurado; Anthropic y OpenAI son alternativas opcionales
+a Groq. Los próximos patrones se agregan al avanzar en el curso.
 
 ## Contenido que consume el portafolio
 

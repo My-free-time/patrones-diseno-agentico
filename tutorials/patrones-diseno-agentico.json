@@ -3,15 +3,15 @@
   "slug": "patrones-diseno-agentico",
   "title": "Patrones de diseño agéntico",
   "subtitle": "Del primer prompt a una ejecución que puedes observar.",
-  "summary": "Prepara un proyecto de TypeScript, recorre sus archivos y conecta Groq o Anthropic con trazas y manejo de errores.",
-  "description": "Una ruta de estudio construida con lo que llevo avanzado: entorno, conceptos, archivos del proyecto y conexión con Groq o Anthropic. Adapto mis apuntes del curso de Fernando Herrera (DevTalles) a explicaciones y prácticas propias. Basta con un proveedor funcionando; las implementaciones de patrones llegarán a medida que avance.",
+  "summary": "Prepara un proyecto de TypeScript, recorre sus archivos y conecta Groq, Anthropic u OpenAI con trazas y manejo de errores.",
+  "description": "Una ruta de estudio construida con lo que llevo avanzado: entorno, conceptos, archivos del proyecto y conexión con Groq, Anthropic u OpenAI. Adapto mis apuntes del curso de Fernando Herrera (DevTalles) a explicaciones y prácticas propias. Basta con un proveedor funcionando; las implementaciones de patrones llegarán a medida que avance.",
   "audience": "Para quienes ya han programado y pueden leer funciones, objetos y async/await en JavaScript o TypeScript.",
   "topics": ["TypeScript", "Agentes de IA", "AI SDK", "Node.js", "Groq"],
   "updatedAt": "2026-10-07",
   "prerequisites": [
     "Variables, funciones, objetos y promesas de JavaScript o TypeScript.",
     "Un editor, una terminal y Node.js con npm; Git para guardar tus cambios.",
-    "Para ejecutar las llamadas: acceso API a Groq o Anthropic y una credencial propia. Puedes estudiar los conceptos y clasificar errores sin realizar llamadas."
+    "Para ejecutar las llamadas: acceso API a Groq, Anthropic u OpenAI y una credencial propia. Puedes estudiar los conceptos y clasificar errores sin realizar llamadas."
   ],
   "preview": {
     "title": "Una primera llamada, un resultado observable",
@@ -76,7 +76,7 @@
           "title": "Elige un proveedor para comenzar",
           "body": [
             "El proyecto de estudio contempla Groq, OpenAI, Anthropic, Google y Ollama. Para comprobar la base basta con conectar uno.",
-            "Esta edición comienza con Groq y ofrece una lección opcional para cambiar a Anthropic. Puedes completar la conexión con cualquiera de los dos. OpenAI, Google y Ollama permanecen como próximas prácticas; no necesitas instalar ni configurar todos los proveedores."
+            "Esta edición comienza con Groq y ofrece lecciones opcionales para cambiar a Anthropic u OpenAI. Puedes completar la conexión con cualquiera de los tres. Google y Ollama permanecen como próximas prácticas; no necesitas instalar ni configurar todos los proveedores."
           ],
           "code": {
             "file": "Decisión de práctica",
@@ -925,6 +925,182 @@
           "explanation": "Las acciones importan model. El selector concentra la elección del proveedor y evita repetir esa decisión."
         }
       ]
+    },
+    {
+      "slug": "conecta-openai",
+      "title": "Conecta OpenAI como proveedor",
+      "summary": "Configura el acceso a la API, selecciona gpt-5-mini y comprueba la conexión con la misma base de acciones.",
+      "minutes": 25,
+      "chapter": "4. Proveedores",
+      "sourcePaths": [
+        "session3/proveedor:openai.md",
+        "session3/agentic-patterns/src/helpers/selected-model.ts",
+        "session3/agentic-patterns/package.json",
+        "session3/agentic-patterns/src/actions/get-message-model.ts"
+      ],
+      "objectives": [
+        "Separar la suscripción de ChatGPT de la facturación de la API.",
+        "Configurar una clave con permisos para generar respuestas.",
+        "Usar OPENAI_API_KEY y el adaptador de OpenAI sin duplicar acciones.",
+        "Interpretar fallos de credencial, permisos, cuota y red."
+      ],
+      "steps": [
+        {
+          "id": "acceso-api-openai",
+          "title": "Prepara tu acceso a la plataforma de OpenAI",
+          "body": [
+            "Esta clase es una alternativa a Groq o Anthropic. Solo necesitas un proveedor funcionando para seguir el curso. Para usar OpenAI desde esta práctica entra en platform.openai.com y revisa el proyecto con el que vas a trabajar.",
+            "La suscripción de ChatGPT y el uso de la API tienen facturación separada. No asumas que una suscripción financia las llamadas de este programa ni que un token de sesión de ChatGPT sustituye una API key. Consulta los ajustes de facturación y los límites de tu cuenta de API.",
+            "No fijamos una recarga mínima ni un precio en la lección: dependen de las condiciones vigentes. Puedes estudiar la configuración sin comprar créditos ni ejecutar una llamada."
+          ],
+          "code": {
+            "file": "Preparación de la práctica",
+            "language": "text",
+            "after": "Proveedor → OpenAI\nPlataforma → https://platform.openai.com\nAdaptador → @ai-sdk/openai\nVariable local → OPENAI_API_KEY\nModelo de esta clase → gpt-5-mini",
+            "highlightLines": []
+          },
+          "expected": "Identificas la cuenta de API y su proyecto sin confundirlos con una suscripción de ChatGPT.",
+          "note": "Fuente oficial de facturación: https://help.openai.com/en/articles/9039756-managing-billing-for-chatgpt-and-the-api-platform. Revisada el 7 de octubre de 2026."
+        },
+        {
+          "id": "clave-y-permisos-openai",
+          "title": "Crea una clave con permiso para generar respuestas",
+          "body": [
+            "En los ajustes de API keys del proyecto crea una credencial con un nombre reconocible, por ejemplo curso-patrones. Comprueba que pertenece al proyecto correcto y guárdala únicamente en tu entorno local.",
+            "La clave y tu rol deben permitir la operación que vas a realizar. El adaptador OpenAI de esta práctica usa Responses API por defecto, por lo que necesita permiso para crear respuestas. Una configuración de solo lectura no autoriza esa generación.",
+            "Revisa los permisos del proyecto y de la clave en la plataforma. Para este ejercicio concede acceso a la generación que necesitas; no hace falta habilitar todas las operaciones del proyecto. No compartas la credencial en los apuntes ni en el repositorio."
+          ],
+          "code": {
+            "file": "Comprobación de acceso",
+            "language": "text",
+            "after": "Proyecto correcto\nClave activa del proyecto\nPermiso para crear respuestas\nAcceso a gpt-5-mini\nFacturación y límites revisados",
+            "highlightLines": []
+          },
+          "expected": "Puedes explicar por qué una clave válida puede fallar si no tiene permiso para la operación o para el proyecto.",
+          "note": "Ajustes de claves: https://platform.openai.com/api-keys. Permisos oficiales: https://developers.openai.com/api/docs/guides/rbac."
+        },
+        {
+          "id": "adaptador-openai",
+          "title": "Añade el adaptador compatible con la práctica",
+          "body": [
+            "El proyecto base ya declara @ai-sdk/openai. Si reconstruiste el ejemplo mínimo con Groq, instala el adaptador desde tu carpeta de práctica. Esta versión coincide con el material de estudio y AI SDK 7.",
+            "Conserva ai, los scripts y las dependencias de desarrollo. No necesitas instalar el paquete openai del SDK oficial para este ejemplo: la integración que estamos usando es @ai-sdk/openai junto con generateText.",
+            "Repetir npm install no garantiza que obtengas la última versión de un paquete: intervienen las versiones declaradas y el lockfile. Si después necesitas actualizar el adaptador, elige una versión compatible, revisa su documentación y vuelve a compilar. Actualizar tampoco concede acceso a un modelo."
+          ],
+          "code": {
+            "file": "Terminal, dentro de tu práctica",
+            "language": "bash",
+            "after": "npm install @ai-sdk/openai@4.0.37",
+            "highlightLines": []
+          },
+          "expected": "El adaptador queda registrado en package.json y el lockfile; instalarlo todavía no realiza una llamada.",
+          "note": "Documentación del adaptador: https://ai-sdk.dev/providers/ai-sdk-providers/openai. La versión 4.0.37 viene del package.json del material."
+        },
+        {
+          "id": "entorno-openai",
+          "title": "Configura OPENAI_API_KEY en el entorno local",
+          "body": [
+            "Añade OPENAI_API_KEY con valor vacío a .env.example, la plantilla pública. La base original puede llamar a su plantilla .env.template. En tu .env local coloca la credencial real, sin espacios accidentales ni un # que convierta la línea en comentario.",
+            "El adaptador lee OPENAI_API_KEY por defecto. Conserva ese nombre exacto; GROQ_API_KEY y ANTHROPIC_API_KEY no autentican una petición a OpenAI. La clave real se queda fuera de Git y del código TypeScript.",
+            "Los scripts dev y start de la práctica cargan .env con --env-file. Si usas otro comando, asegúrate de que carga ese entorno. No hace falta añadir una librería de carga de variables a los scripts que ya configuramos."
+          ],
+          "code": {
+            "file": ".env.example (plantilla pública)",
+            "language": "bash",
+            "after": "# Rellena el valor real solo en tu .env local.\nOPENAI_API_KEY=",
+            "highlightLines": []
+          },
+          "expected": "La plantilla permanece vacía y el proceso de la práctica recibe la variable del proveedor elegido.",
+          "note": "La plantilla pública no muestra el prefijo de una clave real. El valor completo se guarda únicamente en el entorno local."
+        },
+        {
+          "id": "seleccionar-openai",
+          "title": "Selecciona gpt-5-mini en el modelo compartido",
+          "body": [
+            "Reemplaza selected-model.ts por este ejemplo. Conserva la exportación model: las acciones existentes ya la importan, así que puedes cambiar de proveedor sin reescribirlas.",
+            "La clase mantiene gpt-5-mini, el modelo utilizado en el material. Confirma su disponibilidad para tu proyecto. El autocompletado puede mostrar identificadores del adaptador instalado, pero no demuestra permisos ni acceso en la plataforma.",
+            "Exporta un único model. Para volver a Groq o Anthropic restaura su importación y su selección, y comprueba la variable correspondiente. No dupliques export const model ni cambies el nombre que esperan las acciones."
+          ],
+          "code": {
+            "file": "src/helpers/selected-model.ts",
+            "language": "typescript",
+            "after": "import { openai } from '@ai-sdk/openai';\n\nexport const model = openai('gpt-5-mini');",
+            "before": "import { groq } from '@ai-sdk/groq';\n\nexport const model = groq('openai/gpt-oss-20b');",
+            "highlightLines": []
+          },
+          "expected": "La acción sigue importando model y ahora se conecta a OpenAI.",
+          "note": "Modelo oficial: https://developers.openai.com/api/docs/models/gpt-5-mini. openai(modelId) usa Responses API por defecto en el adaptador de esta práctica."
+        },
+        {
+          "id": "comprobar-conexion-openai",
+          "title": "Ejecuta la prueba y diagnostica un fallo",
+          "body": [
+            "En main.ts selecciona getMessageFromModelFailSafe de la lección de errores. Ejecuta primero npm run build y luego npm run dev desde la práctica. build comprueba los tipos; dev envía una petición real a OpenAI.",
+            "El prompt pide “OK, todo listo!”. Lee el resultado real: el tiempo depende del modelo, de la petición y de la red. Una respuesta a este saludo comprueba la conexión, pero no evalúa todavía un patrón agéntico.",
+            "Si falla, empieza por el nombre OPENAI_API_KEY, la carga de .env y la integridad de la clave. Ante 401 revisa autenticación; ante 403, acceso y permisos; ante 429, cuota o límites; ante 404, modelo o recurso. Un error sin respuesta HTTP puede exigir comprobar la red.",
+            "Practica el diagnóstico con casos escritos o una variable ficticia en un archivo temporal. No modifiques tu clave real para provocar un error. Después de corregir la causa, comprueba la conexión antes de seguir con los patrones."
+          ],
+          "code": {
+            "file": "src/main.ts",
+            "language": "typescript",
+            "after": "import { getMessageFromModelFailSafe } from './actions/get-message-model.js';\n\nawait getMessageFromModelFailSafe();",
+            "highlightLines": []
+          },
+          "expected": "Obtienes una respuesta o una orientación de diagnóstico; el ejemplo FailSafe conserva un código de salida de fallo cuando la llamada no se completa.",
+          "note": "La función se implementa en “Interpreta los errores de la conexión”. Si aún no la añadiste, usa getMessageFromModel de la primera llamada. Google y Ollama siguen en preparación."
+        }
+      ],
+      "exercise": {
+        "prompt": "Prepara el selector para OpenAI y explica qué cambia respecto a Groq. Clasifica estos casos: OPENAI_API_KEY ausente, 403 y 429. Si tienes acceso a la API, ejecuta la prueba; en caso contrario, completa el mapa y el diagnóstico sin llamar al modelo.",
+        "hint": "Separa carga del entorno, permisos y límites. main.ts y las acciones importan el mismo model.",
+        "solution": "El selector usa @ai-sdk/openai y gpt-5-mini; la credencial se configura en OPENAI_API_KEY. Una variable ausente exige revisar el entorno, 403 orienta a acceso/permisos y 429 a cuota o límites. Las acciones conservan su importación de model."
+      },
+      "questions": [
+        {
+          "id": "facturacion-openai",
+          "question": "¿Qué financia las llamadas de esta práctica a la API de OpenAI?",
+          "options": [
+            "La suscripción de ChatGPT siempre las incluye.",
+            "La facturación y disponibilidad de uso de la cuenta de API.",
+            "Instalar el adaptador concede créditos automáticamente."
+          ],
+          "correctIndex": 1,
+          "explanation": "ChatGPT y la API tienen facturación separada. La práctica llama a la plataforma API con su credencial."
+        },
+        {
+          "id": "variable-openai",
+          "question": "¿Qué variable lee por defecto el adaptador OpenAI?",
+          "options": [
+            "OPENAI_API_KEY.",
+            "GROQ_API_KEY.",
+            "OPEN_AI_TOKEN sin más configuración."
+          ],
+          "correctIndex": 0,
+          "explanation": "El adaptador espera OPENAI_API_KEY; el script debe cargar el entorno donde está definida."
+        },
+        {
+          "id": "permiso-generacion",
+          "question": "¿Qué debes revisar si la clave existe pero no puedes crear una respuesta?",
+          "options": [
+            "Que tenga acceso de solo lectura a cualquier proyecto.",
+            "El proyecto, los permisos para generar respuestas y el acceso al modelo.",
+            "El color que usa la consola para imprimir el saludo."
+          ],
+          "correctIndex": 1,
+          "explanation": "Una clave y su rol deben permitir la operación en el proyecto. Solo lectura no autoriza crear respuestas."
+        },
+        {
+          "id": "instalacion-y-acceso",
+          "question": "¿Qué puedes concluir después de repetir npm install?",
+          "options": [
+            "Que todos los modelos de OpenAI ya están disponibles para tu cuenta.",
+            "Que se ha instalado siempre la última versión publicada de cada paquete.",
+            "Que la instalación sigue la configuración del proyecto; aún debes comprobar versión y acceso."
+          ],
+          "correctIndex": 2,
+          "explanation": "Las versiones y el lockfile influyen en la instalación. Instalar paquetes no cambia los permisos ni la facturación de la plataforma."
+        }
+      ]
     }
   ],
   "roadmap": [
@@ -941,8 +1117,8 @@
       "summary": "Pedir una revisión humana antes de ejecutar acciones que requieren aprobación."
     },
     {
-      "title": "OpenAI, Google y Ollama",
-      "summary": "Ampliar la conexión a los otros proveedores del proyecto base y preparar una práctica con un modelo local."
+      "title": "Google y Ollama",
+      "summary": "Ampliar la conexión a Google y preparar una práctica con un modelo local mediante Ollama."
     }
   ],
   "repositoryUrl": "https://github.com/My-free-time/patrones-diseno-agentico"
