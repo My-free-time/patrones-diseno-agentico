@@ -3,15 +3,15 @@
   "slug": "patrones-diseno-agentico",
   "title": "Patrones de diseño agéntico",
   "subtitle": "Del primer prompt a una ejecución que puedes observar.",
-  "summary": "Prepara un proyecto de TypeScript, recorre sus archivos y conecta Groq, Anthropic, OpenAI o Google con trazas y manejo de errores.",
-  "description": "Una ruta de estudio construida con lo que llevo avanzado: entorno, conceptos, archivos del proyecto y conexión con Groq, Anthropic, OpenAI o Google. Adapto mis apuntes del curso de Fernando Herrera (DevTalles) a explicaciones y prácticas propias. Basta con un proveedor funcionando; las implementaciones de patrones llegarán a medida que avance.",
+  "summary": "Prepara un proyecto de TypeScript, recorre sus archivos y conecta un proveedor remoto o un modelo local con Ollama, trazas y manejo de errores.",
+  "description": "Una ruta de estudio construida con lo que llevo avanzado: entorno, conceptos, archivos del proyecto y conexión con Groq, Anthropic, OpenAI, Google u Ollama. Adapto mis apuntes del curso de Fernando Herrera (DevTalles) a explicaciones y prácticas propias. Basta con un proveedor funcionando; las implementaciones de patrones llegarán a medida que avance.",
   "audience": "Para quienes ya han programado y pueden leer funciones, objetos y async/await en JavaScript o TypeScript.",
   "topics": ["TypeScript", "Agentes de IA", "AI SDK", "Node.js", "Groq"],
   "updatedAt": "2026-10-07",
   "prerequisites": [
     "Variables, funciones, objetos y promesas de JavaScript o TypeScript.",
     "Un editor, una terminal y Node.js con npm; Git para guardar tus cambios.",
-    "Para ejecutar las llamadas: acceso API a Groq, Anthropic, OpenAI o Google y una credencial propia. Puedes estudiar los conceptos y clasificar errores sin realizar llamadas."
+    "Para ejecutar las llamadas: acceso API y una credencial propia para un proveedor remoto, o un modelo local con Ollama y recursos suficientes. Puedes estudiar los conceptos y clasificar errores sin realizar llamadas."
   ],
   "preview": {
     "title": "Una primera llamada, un resultado observable",
@@ -76,7 +76,7 @@
           "title": "Elige un proveedor para comenzar",
           "body": [
             "El proyecto de estudio contempla Groq, OpenAI, Anthropic, Google y Ollama. Para comprobar la base basta con conectar uno.",
-            "Esta edición comienza con Groq y ofrece lecciones opcionales para cambiar a Anthropic, OpenAI o Google. Puedes completar la conexión con cualquiera de los cuatro. Ollama queda como próxima práctica; no necesitas instalar ni configurar todos los proveedores."
+            "Esta edición comienza con Groq y ofrece lecciones opcionales para cambiar a Anthropic, OpenAI, Google u Ollama. Puedes completar la conexión con cualquiera de los cinco. Ollama permite ejecutar un modelo local; no necesitas instalar ni configurar todos los proveedores."
           ],
           "code": {
             "file": "Decisión de práctica",
@@ -1047,7 +1047,7 @@
             "highlightLines": []
           },
           "expected": "Obtienes una respuesta o una orientación de diagnóstico; el ejemplo FailSafe conserva un código de salida de fallo cuando la llamada no se completa.",
-          "note": "La función se implementa en “Interpreta los errores de la conexión”. Si aún no la añadiste, usa getMessageFromModel de la primera llamada. La configuración de Google continúa en la siguiente clase; Ollama sigue en preparación."
+          "note": "La función se implementa en “Interpreta los errores de la conexión”. Si aún no la añadiste, usa getMessageFromModel de la primera llamada. Las siguientes clases explican la configuración de Google y de modelos locales con Ollama."
         }
       ],
       "exercise": {
@@ -1277,6 +1277,211 @@
           "explanation": "AI Studio permite importar proyectos existentes; la visibilidad y creación de claves dependen del proyecto y sus permisos."
         }
       ]
+    },
+    {
+      "slug": "conecta-ollama",
+      "title": "Ejecuta un modelo local con Ollama",
+      "summary": "Descarga un modelo adecuado para tu equipo, conecta el servidor local y conserva las mismas acciones del proyecto.",
+      "minutes": 30,
+      "chapter": "4. Proveedores",
+      "sourcePaths": [
+        "session3/proveedor:ollama.md",
+        "session3/agentic-patterns/src/helpers/selected-model.ts",
+        "session3/agentic-patterns/package.json",
+        "session3/agentic-patterns/src/actions/get-message-model.ts"
+      ],
+      "objectives": [
+        "Distinguir el servidor Ollama, el modelo descargado y el adaptador de TypeScript.",
+        "Elegir un modelo según memoria, espacio y tiempo de respuesta.",
+        "Conectar un modelo local sin una API key conservando la exportación model.",
+        "Diagnosticar un servidor detenido, una etiqueta ausente o recursos insuficientes."
+      ],
+      "steps": [
+        {
+          "id": "recursos-ollama",
+          "title": "Elige un modelo que tu equipo pueda ejecutar",
+          "body": [
+            "Con Ollama puedes ejecutar esta práctica en tu propio equipo. El modelo usa tus recursos de cómputo; la descarga inicial requiere conexión y espacio disponible. Para el curso basta con un proveedor que funcione.",
+            "En esta clase usamos gpt-oss:20b. La B del catálogo significa miles de millones de parámetros: 20b y 120b son variantes distintas. Actualmente gpt-oss sin etiqueta resuelve a latest, que coincide con 20b; no son dos modelos diferentes que necesites descargar para comparar.",
+            "El catálogo muestra aproximadamente 14 GB para 20b y 65 GB para 120b. Eso es tamaño de descarga, no una garantía de memoria suficiente. Ollama describe 20b en sistemas desde 16 GB de memoria y 120b en una GPU de 80 GB; el contexto, la plataforma y otros procesos afectan los recursos necesarios.",
+            "No asumas que 16 GB de RAM y cualquier tarjeta dedicada bastan para 120b. Si 20b no cabe o tarda demasiado, elige un modelo de texto más pequeño del catálogo. Para futuros ejercicios de herramientas revisaremos también sus capacidades."
+          ],
+          "code": {
+            "file": "Selección de modelo",
+            "language": "text",
+            "after": "Modelo del ejemplo → gpt-oss:20b\nEtiqueta actual equivalente → gpt-oss:latest\nComprueba → descarga, memoria y capacidades\nMide → carga inicial y respuesta posterior",
+            "highlightLines": []
+          },
+          "expected": "Distingues tamaño del archivo y memoria de ejecución antes de iniciar una descarga.",
+          "note": "Catálogo y referencias de memoria: https://ollama.com/library/gpt-oss. Etiquetas: https://ollama.com/library/gpt-oss/tags. Revisados el 7 de octubre de 2026."
+        },
+        {
+          "id": "servidor-ollama",
+          "title": "Instala Ollama y mantén activo el servidor",
+          "body": [
+            "Descarga Ollama desde https://ollama.com/download y sigue la instalación de tu sistema. En macOS o Windows abre la aplicación; en un entorno que todavía no tenga el servicio activo puedes iniciar el servidor con ollama serve.",
+            "La aplicación o el servicio atiende las peticiones locales en el puerto 11434. Es un proceso distinto al programa TypeScript. Si ya está ejecutándose, no necesitas lanzar otro servidor; un mensaje de puerto ocupado puede indicar que ya hay uno activo.",
+            "La API local no requiere una clave. Eso no se aplica a las variantes de nube de Ollama: para esta clase elige la etiqueta local gpt-oss:20b y evita confundirla con :20b-cloud. Mantén el servidor disponible mientras uses la práctica."
+          ],
+          "code": {
+            "file": "Terminal de configuración",
+            "language": "bash",
+            "after": "ollama --version\n\n# Solo si Ollama no está ya ejecutándose:\nollama serve",
+            "highlightLines": []
+          },
+          "expected": "La terminal reconoce Ollama y el servidor local está disponible para recibir peticiones.",
+          "note": "Instalación oficial: https://ollama.com/download. Comandos: https://docs.ollama.com/cli. Autenticación local y nube: https://docs.ollama.com/api/authentication."
+        },
+        {
+          "id": "descargar-modelo-ollama",
+          "title": "Descarga la etiqueta que usarás en el selector",
+          "body": [
+            "En otra terminal, con el servidor activo, ejecuta ollama pull gpt-oss:20b. pull descarga o actualiza el modelo; no abre una conversación. Espera a que termine antes de continuar y comprueba la lista de modelos con ollama ls.",
+            "Instalar el paquete npm no descarga los pesos del modelo. Del mismo modo, tener Ollama instalado no demuestra que la etiqueta elegida esté disponible. El nombre del selector debe corresponder al modelo del servidor al que te conectas.",
+            "Volver a ejecutar pull comprueba la versión disponible. No significa que siempre se vuelvan a descargar todos los gigabytes: Ollama puede reutilizar capas que ya tiene. Si cambiarás de modelo, descarga su etiqueta y comprueba su presencia primero."
+          ],
+          "code": {
+            "file": "Terminal, con Ollama activo",
+            "language": "bash",
+            "after": "ollama pull gpt-oss:20b\nollama ls",
+            "highlightLines": []
+          },
+          "expected": "El listado confirma que gpt-oss:20b está disponible en la instalación local.",
+          "note": "Referencia de descarga y listado: https://docs.ollama.com/cli. El tiempo de descarga depende del tamaño, la red y las capas ya presentes."
+        },
+        {
+          "id": "probar-modelo-ollama",
+          "title": "Prueba el modelo antes de conectar TypeScript",
+          "body": [
+            "Ejecuta un saludo desde la terminal para comprobar que Ollama puede cargar el modelo y generar texto. Esta prueba realiza inferencia local; descargar los archivos por sí solo no demuestra que tu equipo pueda ejecutarlos.",
+            "Compara la primera ejecución con otra posterior. La primera puede incluir el tiempo de carga en memoria. Un ping o un saludo mide una respuesta sencilla y no demuestra todavía calidad para resolver un patrón agéntico.",
+            "ollama ps muestra los modelos cargados y si utilizan CPU, GPU o una combinación. Si falta memoria o la respuesta resulta demasiado lenta, revisa los recursos y elige un modelo más pequeño. No compares etiquetas equivalentes como si fueran modelos diferentes."
+          ],
+          "code": {
+            "file": "Terminal de prueba local",
+            "language": "bash",
+            "after": "ollama run gpt-oss:20b 'Responde solamente con: OK, todo listo!'\nollama ps",
+            "highlightLines": []
+          },
+          "expected": "Recibes texto y puedes observar qué recursos utiliza el modelo cargado.",
+          "note": "Ejecución: https://docs.ollama.com/cli. Carga y memoria: https://docs.ollama.com/faq. El texto exacto y el tiempo de respuesta dependen del modelo y de tu equipo."
+        },
+        {
+          "id": "adaptador-ollama",
+          "title": "Añade el adaptador comunitario y conserva el entorno",
+          "body": [
+            "La base ya declara ollama-ai-provider-v2. Si reconstruiste el proyecto mínimo con Groq, instala la versión del material en tu carpeta de práctica. Este adaptador es comunitario y su versión 4 es compatible con AI SDK 7.",
+            "Son tres piezas distintas: Ollama ejecuta el servidor, pull obtiene el modelo y el paquete npm conecta generateText con la API local. Instalar solo una de ellas no completa la configuración.",
+            "No necesitas una API key para esta llamada local. Aun así, los scripts del proyecto usan --env-file=.env: el archivo .env debe existir, aunque no contenga credenciales. Si no lo tienes, créalo vacío en la carpeta de práctica; si ya existe, consérvalo. No hace falta añadir una variable de clave para Ollama."
+          ],
+          "code": {
+            "file": "Terminal, dentro de tu práctica",
+            "language": "bash",
+            "after": "npm install ollama-ai-provider-v2@4.0.1",
+            "highlightLines": []
+          },
+          "expected": "El adaptador está instalado y los scripts pueden cargar un archivo .env existente sin exigir una clave de Ollama.",
+          "note": "Documentación del mantenedor: https://github.com/opencomp-eu/ollama-ai-provider-v2. La versión 4.0.1 coincide con el package.json del material; no es un adaptador oficial de Vercel."
+        },
+        {
+          "id": "seleccionar-ollama",
+          "title": "Conecta el modelo compartido al servidor local",
+          "body": [
+            "Reemplaza selected-model.ts por este ejemplo y conserva una única exportación model. createOllama permite mostrar explícitamente la dirección del servidor. La dirección termina en /api porque este adaptador utiliza la API nativa de Ollama.",
+            "La importación ollama del mismo paquete también funciona con la dirección local predeterminada en esta versión. Aquí hacemos visible esa configuración para que puedas reconocer qué servidor recibe la petición.",
+            "Selecciona gpt-oss:20b, la misma etiqueta que descargaste. El autocompletado no consulta tu instalación ni confirma que el modelo exista. Las acciones siguen importando model; cambiar de proveedor no requiere duplicarlas."
+          ],
+          "code": {
+            "file": "src/helpers/selected-model.ts",
+            "language": "typescript",
+            "after": "import { createOllama } from 'ollama-ai-provider-v2';\n\nconst ollama = createOllama({\n  baseURL: 'http://127.0.0.1:11434/api',\n});\n\nexport const model = ollama('gpt-oss:20b');",
+            "highlightLines": [],
+            "before": "import { google } from '@ai-sdk/google';\n\nexport const model = google('gemini-3.5-flash-lite');"
+          },
+          "expected": "La acción compartida queda conectada al modelo de tu servidor local.",
+          "note": "Configuración de createOllama: https://github.com/opencomp-eu/ollama-ai-provider-v2. El selector original del material se conserva; este ejemplo usa una etiqueta explícita."
+        },
+        {
+          "id": "comprobar-conexion-ollama",
+          "title": "Ejecuta la práctica y clasifica los fallos",
+          "body": [
+            "En main.ts utiliza getMessageFromModelFailSafe de la lección de errores. Ejecuta npm run build y luego npm run dev desde tu práctica. build verifica los tipos; dev llama al servidor local y consume los recursos de tu equipo.",
+            "Si aparece un fallo antes de llamar al modelo, revisa las dependencias y que exista .env. Si la conexión es rechazada, comprueba que Ollama esté activo en la dirección configurada. Si el servidor no encuentra el modelo, compara la etiqueta del selector con ollama ls y completa pull.",
+            "Para errores al cargar el modelo, revisa la memoria disponible y los registros de Ollama. FailSafe ofrece una orientación general; el diagnóstico local puede necesitar comprobar también el servidor. No esperes una API key como solución a un proceso detenido o un modelo ausente.",
+            "Con una respuesta satisfactoria ya tienes la conexión preparada. Puedes continuar con Groq, Anthropic, OpenAI, Google u Ollama: los patrones describen estrategias, pero cada ejercicio seguirá necesitando capacidades concretas del modelo, como herramientas o salida estructurada."
+          ],
+          "code": {
+            "file": "src/main.ts",
+            "language": "typescript",
+            "after": "import { getMessageFromModelFailSafe } from './actions/get-message-model.js';\n\nawait getMessageFromModelFailSafe();",
+            "highlightLines": []
+          },
+          "expected": "Obtienes una respuesta o puedes clasificar el fallo entre proyecto, servidor, modelo y recursos.",
+          "note": "La función se implementa en “Interpreta los errores de la conexión”. Consulta los registros del servidor cuando su mensaje genérico no explique la causa: https://docs.ollama.com/troubleshooting."
+        }
+      ],
+      "exercise": {
+        "prompt": "Dibuja el recorrido main.ts → acción → model → servidor Ollama → modelo local. Prepara el selector y clasifica estos casos: .env ausente, conexión rechazada y modelo no encontrado. Si tu equipo tiene recursos, ejecuta la prueba local; también puedes completar el mapa y el diagnóstico sin descargar pesos.",
+        "hint": "La instalación del adaptador, el proceso del servidor y los pesos son piezas independientes. No cambies una API key para resolver un fallo local.",
+        "solution": "main.ts invoca la acción, esta importa model y el adaptador llama a la API de Ollama en 127.0.0.1:11434. Ollama carga gpt-oss:20b. Un .env ausente impide el arranque con los scripts actuales; conexión rechazada exige revisar servidor/dirección; modelo no encontrado exige comprobar la etiqueta y descargarla en ese servidor."
+      },
+      "questions": [
+        {
+          "id": "clave-local-ollama",
+          "question": "¿Qué necesitas para ejecutar este ejemplo local de Ollama?",
+          "options": [
+            "Una API key de OpenAI aunque el modelo sea local.",
+            "El servidor activo y el modelo disponible; la API local no exige una clave.",
+            "Únicamente instalar el paquete npm."
+          ],
+          "correctIndex": 1,
+          "explanation": "El adaptador conecta con el servidor local, que carga el modelo descargado. Sus recursos pertenecen al equipo."
+        },
+        {
+          "id": "pull-y-run-ollama",
+          "question": "¿Qué diferencia hay entre pull y run?",
+          "options": [
+            "pull descarga o actualiza; run ejecuta el modelo y puede descargarlo si falta.",
+            "pull genera el saludo y run solo enumera archivos.",
+            "Ambos instalan el adaptador de TypeScript."
+          ],
+          "correctIndex": 0,
+          "explanation": "Usamos pull para preparar los pesos y run para comprobar la inferencia antes de conectar TypeScript."
+        },
+        {
+          "id": "etiquetas-ollama",
+          "question": "¿Qué demuestra que el editor sugiera gpt-oss:20b?",
+          "options": [
+            "Que tu equipo lo tiene descargado y cargado en GPU.",
+            "Que la inferencia siempre será instantánea.",
+            "Solo que conoce ese identificador; debes comprobar el servidor y el modelo."
+          ],
+          "correctIndex": 2,
+          "explanation": "El autocompletado no verifica instalaciones, modelos descargados ni recursos del servidor."
+        },
+        {
+          "id": "memoria-ollama",
+          "question": "¿Cómo interpretas los 14 GB que muestra el catálogo para 20b?",
+          "options": [
+            "Como tamaño de descarga; la ejecución necesita evaluar memoria y contexto.",
+            "Como garantía de que cualquier equipo con 14 GB ejecuta todos los modelos.",
+            "Como RAM suficiente para 120b si hay cualquier GPU dedicada."
+          ],
+          "correctIndex": 0,
+          "explanation": "Disco, RAM, memoria de GPU y contexto son recursos distintos. Debes evaluar la variante elegida en tu plataforma."
+        },
+        {
+          "id": "entorno-local-ollama",
+          "question": "¿Por qué existe .env si la API local no pide una clave?",
+          "options": [
+            "Porque el modelo gpt-oss siempre exige una credencial remota.",
+            "Porque los scripts de la práctica cargan ese archivo con --env-file.",
+            "Porque pull escribe ahí los pesos del modelo."
+          ],
+          "correctIndex": 1,
+          "explanation": "La existencia del archivo satisface el arranque de estos scripts; no implica que debas configurar una clave de Ollama."
+        }
+      ]
     }
   ],
   "roadmap": [
@@ -1291,10 +1496,6 @@
     {
       "title": "Human in the loop",
       "summary": "Pedir una revisión humana antes de ejecutar acciones que requieren aprobación."
-    },
-    {
-      "title": "Ollama",
-      "summary": "Preparar una práctica con un modelo local mediante Ollama."
     }
   ],
   "repositoryUrl": "https://github.com/My-free-time/patrones-diseno-agentico"
