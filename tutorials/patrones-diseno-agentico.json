@@ -3,10 +3,17 @@
   "slug": "patrones-diseno-agentico",
   "title": "Patrones de diseño agéntico",
   "subtitle": "Del primer prompt a una ejecución que puedes observar.",
-  "summary": "Prepara un proyecto de TypeScript, recorre sus archivos y conecta un proveedor remoto o un modelo local con Ollama, trazas y manejo de errores.",
-  "description": "Una ruta de estudio construida con lo que llevo avanzado: entorno, conceptos, archivos del proyecto y conexión con Groq, Anthropic, OpenAI, Google u Ollama. Adapto mis apuntes del curso de Fernando Herrera (DevTalles) a explicaciones y prácticas propias. Basta con un proveedor funcionando; las implementaciones de patrones llegarán a medida que avance.",
+  "summary": "Prepara la práctica con un proveedor remoto o local y entra en Tool Use: reconoce qué datos faltan antes de conectar herramientas.",
+  "description": "Una ruta de estudio construida con lo que llevo avanzado: entorno, conceptos, archivos del proyecto y conexión con Groq, Anthropic, OpenAI, Google u Ollama. La sesión 4 introduce Tool Use con una petición sobre un catálogo de cursos; las próximas clases desarrollarán sus herramientas. Adapto mis apuntes del curso de Fernando Herrera (DevTalles) a explicaciones y prácticas propias. Basta con un proveedor funcionando para continuar.",
   "audience": "Para quienes ya han programado y pueden leer funciones, objetos y async/await en JavaScript o TypeScript.",
-  "topics": ["TypeScript", "Agentes de IA", "AI SDK", "Node.js", "Groq"],
+  "topics": [
+    "TypeScript",
+    "Agentes de IA",
+    "AI SDK",
+    "Node.js",
+    "Groq",
+    "Tool Use"
+  ],
   "updatedAt": "2026-10-07",
   "prerequisites": [
     "Variables, funciones, objetos y promesas de JavaScript o TypeScript.",
@@ -1482,12 +1489,188 @@
           "explanation": "La existencia del archivo satisface el arranque de estos scripts; no implica que debas configurar una clave de Ollama."
         }
       ]
+    },
+    {
+      "slug": "introduccion-tool-use",
+      "title": "Sesión 4: Introducción a Tool Use",
+      "summary": "Parte de una petición sobre cursos sin acceso al catálogo y prepara una comparación antes y después de añadir herramientas.",
+      "minutes": 15,
+      "chapter": "Sesión 4 · Tool Use",
+      "sourcePaths": [
+        "session4/introduccion.md",
+        "session4/temas-puntuales.md"
+      ],
+      "objectives": [
+        "Identificar los datos que faltan para resolver una petición concreta.",
+        "Distinguir una respuesta sin evidencia de una solicitud de contexto.",
+        "Explicar cómo una herramienta conecta al modelo con datos y operaciones.",
+        "Preparar una comparación que compruebe datos y cálculos."
+      ],
+      "steps": [
+        {
+          "id": "temas-session4",
+          "title": "Conoce los temas de la sesión 4",
+          "body": [
+            "La sección comienza con Tool Use. Partiremos de una petición que el modelo no puede respaldar con datos del catálogo, observaremos su respuesta y después construiremos herramientas para consultar cursos y calcular montos.",
+            "Repasaremos las funciones para generar texto y compararemos modelos con y sin razonamiento explícito. Esa comparación debe observar resultados, tiempo y consumo; disponer de razonamiento no da acceso automático a datos ausentes.",
+            "Crearemos herramientas y funciones con dos responsabilidades: buscar cursos y calcular montos. Después organizaremos un agente con instrucciones específicas sobre qué consultar, cómo usar los resultados y qué hacer cuando falte información.",
+            "Esta introducción presenta el recorrido de la sección. Las funciones, herramientas y el agente se desarrollarán en las siguientes clases, utilizando la conexión con un proveedor que ya tienes preparada."
+          ],
+          "code": {
+            "file": "Temas puntuales de la sesión 4",
+            "language": "text",
+            "after": "1. Funciones para generar texto\n2. Modelos pensantes y no pensantes\n3. Creación de herramientas y funciones\n   - Buscar cursos\n   - Calcular montos\n4. Crear agentes con instrucciones específicas",
+            "highlightLines": []
+          },
+          "expected": "Reconoces el recorrido de la sección y las dos operaciones que construiremos para resolver la petición."
+        },
+        {
+          "id": "peticion-sin-catalogo",
+          "title": "Plantea una tarea que necesita datos del negocio",
+          "body": [
+            "Entramos en la sesión 4 y en el primer patrón que vamos a desarrollar: Tool Use. La preparación de proveedores ya nos permite enviar mensajes; ahora necesitamos resolver una tarea cuya respuesta depende de información externa.",
+            "La petición del material pide los cursos de TypeScript y Node, sus horas, alumnos y un descuento combinado del 20 %. En esta prueba el modelo no recibe el catálogo ni dispone de una herramienta para consultarlo.",
+            "El problema no es redactar el texto del descuento. Faltan datos concretos: qué cursos son, cuánto cuestan y cuáles son sus cifras actuales. Un modelo más reciente no obtiene automáticamente acceso a ese catálogo."
+          ],
+          "code": {
+            "file": "Prompt de la sección",
+            "language": "text",
+            "after": "Dame los cursos de TypeScript y Node,\nla cantidad de horas, alumnos\ny dame un 20% de descuento combinado.\n\nCondición de la prueba: sin catálogo ni herramientas.",
+            "highlightLines": []
+          },
+          "expected": "Puedes explicar qué parte de la petición exige consultar una fuente, antes de evaluar la respuesta."
+        },
+        {
+          "id": "datos-y-regla",
+          "title": "Separa los datos ausentes de la regla de cálculo",
+          "body": [
+            "Antes de llamar al modelo, enumera la información necesaria: identificadores de los cursos, títulos, horas, alumnos, precios y moneda. Debemos saber qué catálogo estamos consultando y qué significan sus cifras.",
+            "Para esta práctica definiremos el descuento combinado como un 20 % aplicado una sola vez a la suma de los dos precios. La regla es conocida; los precios todavía tienen que venir de una fuente.",
+            "Una instrucción más larga puede aclarar la tarea, pero no vuelve disponibles los datos que no has proporcionado. Si falta un curso o un precio, la respuesta debe reconocerlo o solicitarlo en lugar de completarlo con una cifra supuesta."
+          ],
+          "code": {
+            "file": "Datos y operación",
+            "language": "text",
+            "after": "Consultar por curso → id, título, horas, alumnos, precio, moneda\nCalcular → subtotal = precio TypeScript + precio Node\nAplicar → descuento = subtotal × 0.20\nDevolver → total = subtotal − descuento\nSi falta un dato → indicar qué falta; no inventarlo",
+            "highlightLines": []
+          },
+          "expected": "Distingues la consulta al catálogo de la operación que aplica una regla a los datos."
+        },
+        {
+          "id": "respuestas-sin-evidencia",
+          "title": "Observa cómo responde cuando no tiene la información",
+          "body": [
+            "En el material se describen respuestas que inventan precios, horas o incluso cambian uno de los cursos pedidos por Docker. Una respuesta fluida puede resultar convincente y aun así no responder con datos del catálogo.",
+            "Otra respuesta posible reconoce que no tiene esa información y pide el catálogo. Ese comportamiento permite avanzar con una aclaración; no es lo mismo que afirmar datos sin respaldo. No damos por hecho que todos los modelos responderán igual.",
+            "Los ejemplos de este paso son simulados, no resultados de una ejecución. Cuando hagamos la prueba, guardaremos la respuesta real y comprobaremos qué afirmaciones tienen una fuente. Que una cifra parezca razonable no demuestra que haya sido consultada."
+          ],
+          "code": {
+            "file": "Respuestas simuladas para comparar",
+            "language": "text",
+            "after": "A: “TypeScript cuesta 90 y Docker cuesta 60...”\n   → Cifras sin fuente y un curso distinto al solicitado.\n\nB: “Necesito el catálogo con precios, horas y alumnos.”\n   → Reconoce la información que falta.\n\nComprobación: ¿qué evidencia sostiene cada dato?",
+            "highlightLines": []
+          },
+          "expected": "Identificas afirmaciones sin respaldo y distingues pedir información de inventarla."
+        },
+        {
+          "id": "flujo-tool-use",
+          "title": "Conecta el problema con el patrón Tool Use",
+          "body": [
+            "Tool Use permite ofrecer al modelo operaciones que definimos en la aplicación. Para este caso prepararemos una consulta de cursos y una operación que aplique la regla del descuento a precios conocidos.",
+            "Cada herramienta necesita una función clara, una descripción, entradas definidas y un resultado que el modelo pueda utilizar. En las herramientas propias de esta práctica, el modelo propone una llamada; el programa valida sus argumentos, ejecuta la operación y devuelve el resultado.",
+            "Después, el modelo puede usar esos resultados para redactar la respuesta. La herramienta no debe fabricar los datos que faltan. Si la consulta falla o no encuentra un curso, ese resultado también tiene que formar parte del flujo."
+          ],
+          "code": {
+            "file": "Recorrido conceptual de Tool Use",
+            "language": "text",
+            "after": "Usuario → pide cursos y descuento\nModelo → solicita una consulta de cursos\nAplicación → valida entradas y consulta el catálogo\nHerramienta → devuelve datos o informa de un fallo\nAplicación → calcula el descuento con los precios obtenidos\nModelo → redacta la respuesta con los resultados\nComprobación → contrasta la respuesta con el catálogo",
+            "highlightLines": []
+          },
+          "expected": "Explicas quién solicita la operación, quién la ejecuta y de dónde sale la información.",
+          "note": "Referencia conceptual de herramientas definidas por la aplicación: https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview. Esta introducción describe el patrón; la implementación seguirá en las próximas clases."
+        },
+        {
+          "id": "comparacion-antes-despues",
+          "title": "Define cómo comprobarás la mejora",
+          "body": [
+            "Seguiremos la secuencia de la sección: plantear el problema, observar el resultado, incorporar herramientas y repetir la tarea. Para comparar, conserva el mismo enunciado, el mismo catálogo de prueba y el criterio de respuesta.",
+            "El catálogo de este ejemplo es ficticio y solo sirve para preparar la evaluación. Con precios de 80 y 120 USD, el subtotal es 200 USD, el descuento es 40 USD y el total es 160 USD. Presenta las horas y alumnos por curso; sumar inscripciones no demuestra cuántas personas únicas hay.",
+            "Una respuesta verificable debe conservar los cursos solicitados, sus datos y la regla de cálculo. También evaluaremos casos con un curso ausente o una consulta fallida. Las herramientas pueden mejorar el acceso a información, pero un dato incorrecto o un resultado mal interpretado todavía exige revisión.",
+            "En esta clase dejamos preparado el problema y la comparación. En las siguientes construiremos las herramientas desde cero y veremos sus entradas, ejecución y resultados. Puedes seguir con cualquiera de los proveedores configurados que admita las capacidades del ejercicio."
+          ],
+          "code": {
+            "file": "Catálogo ficticio y resultado de referencia",
+            "language": "text",
+            "after": "Datos ficticios; no son cifras de cursos reales.\nTypeScript → 12 horas · 300 alumnos · 80 USD\nNode → 20 horas · 500 alumnos · 120 USD\n\nSubtotal → 200 USD\nDescuento del 20 % → 40 USD\nTotal combinado → 160 USD\n\nAntes → respuesta sin acceso al catálogo\nDespués → respuesta contrastada con consulta y cálculo",
+            "highlightLines": []
+          },
+          "expected": "Tienes una referencia para comprobar datos, descuento y manejo de información ausente, sin prometer que el patrón siempre acertará."
+        }
+      ],
+      "exercise": {
+        "prompt": "Con la petición de TypeScript y Node, identifica los datos que faltan, propone dos herramientas y explica cómo comprobarías la respuesta. Usa el catálogo ficticio del último paso para calcular el descuento. Si no se encuentra Node, explica qué debería ocurrir.",
+        "hint": "Separa consultar cursos de aplicar el porcentaje. Contrasta las cifras con la fuente y no reemplaces un curso ausente por otro.",
+        "solution": "Una consulta devuelve los dos cursos y sus datos; una operación calcula el descuento sobre precios de la misma moneda. Con el catálogo ficticio, 80 + 120 = 200 USD, el 20 % son 40 USD y el total es 160 USD. Se comprueban títulos, horas y alumnos por curso. Si Node no aparece, se informa del dato ausente y no se afirma un total combinado completo."
+      },
+      "questions": [
+        {
+          "id": "dato-sin-acceso",
+          "question": "¿Qué impide resolver con datos verificables la petición inicial?",
+          "options": [
+            "Que el modelo no recibe el catálogo ni tiene una herramienta para consultarlo.",
+            "Que el prompt es demasiado corto para incluir un porcentaje.",
+            "Que TypeScript y Node nunca pueden aparecer en una misma respuesta."
+          ],
+          "correctIndex": 0,
+          "explanation": "La tarea depende de información específica del catálogo, que no se ha proporcionado ni hecho accesible."
+        },
+        {
+          "id": "pedir-contexto",
+          "question": "¿Cómo evalúas una respuesta que pide los datos del catálogo?",
+          "options": [
+            "Como equivalente a inventar precios.",
+            "Como una aclaración que reconoce la información faltante.",
+            "Como prueba de que las herramientas siempre fallan."
+          ],
+          "correctIndex": 1,
+          "explanation": "Reconocer qué falta permite completar el contexto sin afirmar cifras sin respaldo."
+        },
+        {
+          "id": "ejecutor-herramienta",
+          "question": "En las herramientas propias de esta práctica, ¿quién ejecuta la operación?",
+          "options": [
+            "El modelo accede automáticamente a cualquier base de datos.",
+            "La aplicación valida los argumentos y ejecuta la función definida.",
+            "La descripción de la herramienta consulta el catálogo por sí sola."
+          ],
+          "correctIndex": 1,
+          "explanation": "El modelo solicita una llamada; el programa ejecuta la operación y devuelve su resultado."
+        },
+        {
+          "id": "descuento-catalogo",
+          "question": "En el catálogo ficticio, ¿cuál es el total de 80 + 120 USD después de un descuento combinado del 20 %?",
+          "options": ["40 USD.", "200 USD.", "160 USD."],
+          "correctIndex": 2,
+          "explanation": "El subtotal es 200 USD. El descuento es 40 USD y el total queda en 160 USD."
+        },
+        {
+          "id": "verificar-mejora",
+          "question": "¿Qué demuestra mejor que el patrón mejora este caso?",
+          "options": [
+            "Que la respuesta tiene más palabras y parece segura.",
+            "Que proviene siempre del modelo más caro.",
+            "Que coincide con la fuente y el cálculo, y trata correctamente los datos ausentes."
+          ],
+          "correctIndex": 2,
+          "explanation": "La comparación debe comprobar el resultado frente a datos conocidos y observar también los casos de fallo."
+        }
+      ]
     }
   ],
   "roadmap": [
     {
-      "title": "Tool Use",
-      "summary": "Conectar operaciones y datos reales para resolver tareas que necesitan información externa."
+      "title": "Implementación de Tool Use",
+      "summary": "Convertir la introducción de la sesión 4 en herramientas de consulta y cálculo, con entradas validadas y resultados observables."
     },
     {
       "title": "ReAct y controles de ejecución",

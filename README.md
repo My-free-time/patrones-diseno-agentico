@@ -2,10 +2,10 @@
 
 Apuntes y laboratorio guiado de Victor Flores mientras estudia el curso de
 Fernando Herrera (DevTalles). El material de estudio está atribuido a su autor;
-las diez lecciones guiadas adaptan lo trabajado hasta ahora: entorno, conceptos,
-estructura y archivos del proyecto, primera llamada, trazas, errores, Anthropic, OpenAI, Google y Ollama.
+las once lecciones guiadas adaptan lo trabajado hasta ahora: entorno, conceptos,
+estructura y archivos del proyecto, primera llamada, trazas, errores, Anthropic, OpenAI, Google, Ollama e introducción a Tool Use.
 Basta con un proveedor configurado; Anthropic, OpenAI, Google y Ollama son alternativas opcionales
-a Groq. Los próximos patrones se agregan al avanzar en el curso.
+a Groq. La sesión 4 comienza en `session4/introduccion.md`, con el problema del catálogo de cursos y la comparación antes/después de Tool Use. Las próximas clases desarrollarán sus herramientas.
 
 ## Contenido que consume el portafolio
 
