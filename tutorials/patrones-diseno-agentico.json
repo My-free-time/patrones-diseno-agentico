@@ -3,15 +3,15 @@
   "slug": "patrones-diseno-agentico",
   "title": "Patrones de diseño agéntico",
   "subtitle": "Del primer prompt a una ejecución que puedes observar.",
-  "summary": "Prepara un proyecto de TypeScript, recorre sus archivos y conecta Groq, Anthropic u OpenAI con trazas y manejo de errores.",
-  "description": "Una ruta de estudio construida con lo que llevo avanzado: entorno, conceptos, archivos del proyecto y conexión con Groq, Anthropic u OpenAI. Adapto mis apuntes del curso de Fernando Herrera (DevTalles) a explicaciones y prácticas propias. Basta con un proveedor funcionando; las implementaciones de patrones llegarán a medida que avance.",
+  "summary": "Prepara un proyecto de TypeScript, recorre sus archivos y conecta Groq, Anthropic, OpenAI o Google con trazas y manejo de errores.",
+  "description": "Una ruta de estudio construida con lo que llevo avanzado: entorno, conceptos, archivos del proyecto y conexión con Groq, Anthropic, OpenAI o Google. Adapto mis apuntes del curso de Fernando Herrera (DevTalles) a explicaciones y prácticas propias. Basta con un proveedor funcionando; las implementaciones de patrones llegarán a medida que avance.",
   "audience": "Para quienes ya han programado y pueden leer funciones, objetos y async/await en JavaScript o TypeScript.",
   "topics": ["TypeScript", "Agentes de IA", "AI SDK", "Node.js", "Groq"],
   "updatedAt": "2026-10-07",
   "prerequisites": [
     "Variables, funciones, objetos y promesas de JavaScript o TypeScript.",
     "Un editor, una terminal y Node.js con npm; Git para guardar tus cambios.",
-    "Para ejecutar las llamadas: acceso API a Groq, Anthropic u OpenAI y una credencial propia. Puedes estudiar los conceptos y clasificar errores sin realizar llamadas."
+    "Para ejecutar las llamadas: acceso API a Groq, Anthropic, OpenAI o Google y una credencial propia. Puedes estudiar los conceptos y clasificar errores sin realizar llamadas."
   ],
   "preview": {
     "title": "Una primera llamada, un resultado observable",
@@ -76,7 +76,7 @@
           "title": "Elige un proveedor para comenzar",
           "body": [
             "El proyecto de estudio contempla Groq, OpenAI, Anthropic, Google y Ollama. Para comprobar la base basta con conectar uno.",
-            "Esta edición comienza con Groq y ofrece lecciones opcionales para cambiar a Anthropic u OpenAI. Puedes completar la conexión con cualquiera de los tres. Google y Ollama permanecen como próximas prácticas; no necesitas instalar ni configurar todos los proveedores."
+            "Esta edición comienza con Groq y ofrece lecciones opcionales para cambiar a Anthropic, OpenAI o Google. Puedes completar la conexión con cualquiera de los cuatro. Ollama queda como próxima práctica; no necesitas instalar ni configurar todos los proveedores."
           ],
           "code": {
             "file": "Decisión de práctica",
@@ -1047,7 +1047,7 @@
             "highlightLines": []
           },
           "expected": "Obtienes una respuesta o una orientación de diagnóstico; el ejemplo FailSafe conserva un código de salida de fallo cuando la llamada no se completa.",
-          "note": "La función se implementa en “Interpreta los errores de la conexión”. Si aún no la añadiste, usa getMessageFromModel de la primera llamada. Google y Ollama siguen en preparación."
+          "note": "La función se implementa en “Interpreta los errores de la conexión”. Si aún no la añadiste, usa getMessageFromModel de la primera llamada. La configuración de Google continúa en la siguiente clase; Ollama sigue en preparación."
         }
       ],
       "exercise": {
@@ -1101,6 +1101,182 @@
           "explanation": "Las versiones y el lockfile influyen en la instalación. Instalar paquetes no cambia los permisos ni la facturación de la plataforma."
         }
       ]
+    },
+    {
+      "slug": "conecta-google",
+      "title": "Conecta Google con Gemini",
+      "summary": "Prepara tu proyecto y clave en AI Studio, selecciona un modelo de texto Gemini y comprueba la conexión.",
+      "minutes": 25,
+      "chapter": "4. Proveedores",
+      "sourcePaths": [
+        "session3/proveedor:google.md",
+        "session3/agentic-patterns/src/helpers/selected-model.ts",
+        "session3/agentic-patterns/package.json",
+        "session3/agentic-patterns/src/actions/get-message-model.ts"
+      ],
+      "objectives": [
+        "Relacionar la clave de Gemini con su proyecto y sus cuotas.",
+        "Configurar GOOGLE_GENERATIVE_AI_API_KEY para el adaptador de Google.",
+        "Seleccionar un modelo de texto conservando la exportación model.",
+        "Diagnosticar errores de entorno, acceso, modelo y límites."
+      ],
+      "steps": [
+        {
+          "id": "acceso-google",
+          "title": "Revisa el acceso a Gemini y sus cuotas",
+          "body": [
+            "Google es otra alternativa para la misma práctica. Entra en Google AI Studio con tu cuenta y revisa qué modelos y cuotas tiene tu proyecto. Basta con un proveedor funcionando para continuar con los patrones.",
+            "La API ofrece un nivel gratuito para determinados modelos, sujeto a disponibilidad y límites. Puedes comenzar con el nivel gratuito cuando esté disponible para tu cuenta y modelo. Si habilitas el nivel de pago, revisa sus condiciones: las llamadas pueden generar cargos. Crear una clave no garantiza uso ilimitado ni gratuito.",
+            "Esta clase utiliza Gemini API mediante @ai-sdk/google. Vertex AI tiene otro adaptador y otra configuración; no mezcles sus instrucciones. Consulta el uso y los límites del proyecto antes de ejecutar la práctica."
+          ],
+          "code": {
+            "file": "Preparación de la práctica",
+            "language": "text",
+            "after": "Proveedor → Google / Gemini API\nClaves → https://aistudio.google.com/api-keys\nAdaptador → @ai-sdk/google\nVariable local → GOOGLE_GENERATIVE_AI_API_KEY\nModelo de texto → gemini-3.5-flash-lite",
+            "highlightLines": []
+          },
+          "expected": "Identificas el proyecto, su nivel de uso y el proveedor que consumirá la práctica.",
+          "note": "Facturación oficial: https://ai.google.dev/gemini-api/docs/billing. Precios y disponibilidad por modelo: https://ai.google.dev/gemini-api/docs/pricing. Revisados el 7 de octubre de 2026."
+        },
+        {
+          "id": "proyecto-y-clave-google",
+          "title": "Crea la clave en el proyecto correcto",
+          "body": [
+            "En AI Studio abre API Keys y crea una clave con un nombre reconocible, como patrones-curso. Comprueba el proyecto asociado. Para usuarios nuevos, AI Studio puede preparar un proyecto y una clave por defecto al aceptar sus condiciones.",
+            "Si ya tienes proyectos en Google Cloud y no aparecen, impórtalos desde Projects en AI Studio. Si necesitas uno nuevo, créalo en https://console.cloud.google.com/projectcreate y vuelve a importarlo. Si no puedes crear la clave, revisa los permisos de tu cuenta o consulta al administrador del proyecto.",
+            "Una clave tiene restricciones y el proyecto tiene cuotas. Las claves nuevas de AI Studio se restringen a Gemini API; Google rechaza claves estándar sin restricciones. No elimines esas restricciones para intentar resolver un error. Guarda la credencial solo en tu entorno local."
+          ],
+          "code": {
+            "file": "Mapa de configuración",
+            "language": "text",
+            "after": "Cuenta de Google\n  → Proyecto en Google Cloud\n  → Proyecto visible en AI Studio\n  → Clave válida para Gemini API\n  → Cuotas y acceso al modelo",
+            "highlightLines": []
+          },
+          "expected": "Tienes una clave asociada a un proyecto al que puedes acceder, sin publicarla en los apuntes.",
+          "note": "Guía oficial de claves, proyectos y permisos: https://ai.google.dev/gemini-api/docs/api-key. La interfaz puede cambiar; sigue los ajustes vigentes de tu cuenta."
+        },
+        {
+          "id": "adaptador-google",
+          "title": "Instala el adaptador compatible",
+          "body": [
+            "El proyecto base ya incluye @ai-sdk/google. Si reconstruiste la práctica mínima con Groq, añade este paquete en esa carpeta. La versión del ejemplo coincide con el material local y con AI SDK 7.",
+            "Conserva ai y los scripts existentes. Para este ejercicio usamos el adaptador de Vercel con generateText; no necesitas añadir @google/genai. Actualizar paquetes no activa facturación ni concede acceso a modelos.",
+            "El autocompletado depende del adaptador instalado. Comprueba el identificador en la documentación de Google y vuelve a compilar cuando cambies de versión o modelo."
+          ],
+          "code": {
+            "file": "Terminal, dentro de tu práctica",
+            "language": "bash",
+            "after": "npm install @ai-sdk/google@4.0.41",
+            "highlightLines": []
+          },
+          "expected": "El adaptador está disponible para TypeScript sin haber enviado todavía una petición al modelo.",
+          "note": "Documentación del adaptador: https://ai-sdk.dev/providers/ai-sdk-providers/google. La versión 4.0.41 viene del package.json del material."
+        },
+        {
+          "id": "entorno-google",
+          "title": "Configura la variable que espera el adaptador",
+          "body": [
+            "Añade GOOGLE_GENERATIVE_AI_API_KEY con valor vacío a .env.example. En tu archivo .env local coloca la clave real en esa variable. Si la línea empieza por #, seguirá siendo un comentario. Evita espacios accidentales en el valor y conserva el nombre exacto.",
+            "@ai-sdk/google lee GOOGLE_GENERATIVE_AI_API_KEY por defecto. Las guías del SDK propio de Google pueden usar GEMINI_API_KEY o GOOGLE_API_KEY; esos nombres no sustituyen automáticamente el que espera este adaptador.",
+            "Los scripts dev y start de nuestra práctica cargan .env con --env-file. Guarda el archivo y vuelve a iniciar el proceso tras cambiarlo. Comprueba la carga de la variable sin imprimir su contenido; la clave real permanece fuera de Git."
+          ],
+          "code": {
+            "file": ".env.example (plantilla pública)",
+            "language": "bash",
+            "after": "# Rellena el valor real solo en tu .env local.\nGOOGLE_GENERATIVE_AI_API_KEY=",
+            "highlightLines": []
+          },
+          "expected": "La plantilla pública queda vacía y el proceso recibe la variable correcta del proveedor elegido.",
+          "note": "El nombre predeterminado está documentado en https://ai-sdk.dev/providers/ai-sdk-providers/google. No copies credenciales en código, apuntes ni capturas."
+        },
+        {
+          "id": "seleccionar-google",
+          "title": "Selecciona un modelo Gemini que genere texto",
+          "body": [
+            "En selected-model.ts conserva una única exportación model y cambia la selección anterior por google(...). Las acciones siguen importando model; no necesitan una segunda implementación para cambiar de proveedor.",
+            "Usamos gemini-3.5-flash-lite, un modelo estable con salida de texto. El selector original conserva gemini-2.5-flash, pero Google limita el acceso a la familia 2.5 a usuarios que ya la utilizaban y recomienda modelos actuales para proyectos nuevos. Confirma siempre la disponibilidad y las cuotas en tu cuenta.",
+            "Ctrl + Espacio ayuda a descubrir identificadores, pero no comprueba el acceso real. Los modelos de imágenes, como Nano Banana, requieren una práctica adaptada a su modalidad. Para este saludo elige un modelo que admita generateText y salida de texto."
+          ],
+          "code": {
+            "file": "src/helpers/selected-model.ts",
+            "language": "typescript",
+            "after": "import { google } from '@ai-sdk/google';\n\nexport const model = google('gemini-3.5-flash-lite');",
+            "highlightLines": [],
+            "before": "import { openai } from '@ai-sdk/openai';\n\nexport const model = openai('gpt-5-mini');"
+          },
+          "expected": "La misma acción usa ahora Gemini API con un modelo adecuado para el saludo de texto.",
+          "note": "Modelo: https://ai.google.dev/gemini-api/docs/models/gemini-3.5-flash-lite. Disponibilidad y cambios de modelos: https://ai.google.dev/gemini-api/docs/deprecations."
+        },
+        {
+          "id": "comprobar-conexion-google",
+          "title": "Comprueba la conexión y usa FailSafe si falla",
+          "body": [
+            "En main.ts usa getMessageFromModelFailSafe de la lección de errores. Desde la carpeta de práctica ejecuta npm run build y luego npm run dev. La compilación revisa los tipos; dev realiza una llamada real y consume la cuota del proyecto.",
+            "El prompt pide “OK, todo listo!”. Lee la respuesta recibida. Esa prueba comprueba la conexión; para comparar modelos necesitarás tareas representativas y medidas de calidad, tiempo y consumo.",
+            "Si falla, revisa primero GOOGLE_GENERATIVE_AI_API_KEY y la carga de .env. Un 400 puede indicar una petición o clave inválida; un 401 o 403 orienta a autenticación, permisos o restricciones; un 429, a cuotas o límites; un 404, al modelo o recurso. Lee el detalle del error antes de decidir qué cambiar. Para fallos de red o del servicio consulta también su estado.",
+            "Practica el diagnóstico con casos escritos sin alterar tu credencial real. Tras corregir la causa, repite la prueba. Puedes continuar con los patrones usando cualquier proveedor que ya funcione; la próxima clase de configuración será Ollama."
+          ],
+          "code": {
+            "file": "src/main.ts",
+            "language": "typescript",
+            "after": "import { getMessageFromModelFailSafe } from './actions/get-message-model.js';\n\nawait getMessageFromModelFailSafe();",
+            "highlightLines": []
+          },
+          "expected": "Obtienes el saludo o una orientación de diagnóstico. FailSafe conserva un código de salida de fallo cuando la llamada no se completa.",
+          "note": "La función se añade en “Interpreta los errores de la conexión”. Guía oficial de errores: https://ai.google.dev/gemini-api/docs/troubleshooting."
+        }
+      ],
+      "exercise": {
+        "prompt": "Prepara el selector de Google y una plantilla de entorno vacía. Explica qué proyecto consumirá la cuota y clasifica estos casos: variable ausente, 403 y 429. Si tienes acceso API, ejecuta la prueba; también puedes resolver el diagnóstico sin hacer llamadas.",
+        "hint": "Conserva la exportación model y distingue la variable del adaptador de las variables del SDK propio de Google.",
+        "solution": "Usa @ai-sdk/google con un modelo de texto disponible para tu cuenta y GOOGLE_GENERATIVE_AI_API_KEY. La clave identifica el proyecto de la cuota. Una variable ausente exige revisar el entorno, 403 orienta a permisos/restricciones y 429 a límites o cuota. Las acciones siguen importando model."
+      },
+      "questions": [
+        {
+          "id": "variable-google",
+          "question": "¿Qué variable lee por defecto @ai-sdk/google?",
+          "options": [
+            "GOOGLE_GENERATIVE_AI_API_KEY.",
+            "OPENAI_API_KEY.",
+            "Cualquier variable que termine en API_KEY."
+          ],
+          "correctIndex": 0,
+          "explanation": "Este adaptador espera GOOGLE_GENERATIVE_AI_API_KEY; otras bibliotecas pueden tener nombres predeterminados distintos."
+        },
+        {
+          "id": "cuota-google",
+          "question": "¿Qué puedes concluir al crear una clave de Gemini?",
+          "options": [
+            "Que todas las llamadas serán gratuitas e ilimitadas.",
+            "Que instalar el adaptador paga la facturación.",
+            "Que debes revisar el proyecto, el acceso y las cuotas antes de llamar."
+          ],
+          "correctIndex": 2,
+          "explanation": "Crear la credencial no elimina restricciones, límites ni posibles cargos del nivel de pago."
+        },
+        {
+          "id": "modelo-texto-google",
+          "question": "¿Qué modelo conviene para esta prueba de generateText?",
+          "options": [
+            "Cualquier identificador del autocompletado, sin comprobar sus capacidades.",
+            "Un modelo disponible para tu cuenta que admita salida de texto.",
+            "Un modelo dedicado a imágenes sin adaptar la acción."
+          ],
+          "correctIndex": 1,
+          "explanation": "El saludo necesita salida de texto. El autocompletado no demuestra modalidad ni acceso real."
+        },
+        {
+          "id": "proyecto-ai-studio",
+          "question": "¿Qué revisas si tu proyecto de Cloud no aparece en AI Studio?",
+          "options": [
+            "Si debes importarlo en Projects y si tu cuenta tiene permisos.",
+            "Si debes cambiar el nombre de la exportación model.",
+            "Si debes pegar la clave directamente en main.ts."
+          ],
+          "correctIndex": 0,
+          "explanation": "AI Studio permite importar proyectos existentes; la visibilidad y creación de claves dependen del proyecto y sus permisos."
+        }
+      ]
     }
   ],
   "roadmap": [
@@ -1117,8 +1293,8 @@
       "summary": "Pedir una revisión humana antes de ejecutar acciones que requieren aprobación."
     },
     {
-      "title": "Google y Ollama",
-      "summary": "Ampliar la conexión a Google y preparar una práctica con un modelo local mediante Ollama."
+      "title": "Ollama",
+      "summary": "Preparar una práctica con un modelo local mediante Ollama."
     }
   ],
   "repositoryUrl": "https://github.com/My-free-time/patrones-diseno-agentico"
