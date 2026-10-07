@@ -3,15 +3,15 @@
   "slug": "patrones-diseno-agentico",
   "title": "Patrones de diseño agéntico",
   "subtitle": "Del primer prompt a una ejecución que puedes observar.",
-  "summary": "Prepara un proyecto de TypeScript, entiende qué resuelve un patrón agéntico y conecta un modelo con trazas y manejo de errores.",
-  "description": "Una ruta de estudio construida con lo que llevo avanzado: entorno, conceptos y proyecto base. Adapto mis apuntes del curso de Fernando Herrera (DevTalles) a explicaciones y prácticas propias. Por ahora comprobamos la conexión; las implementaciones de patrones llegarán a medida que avance.",
+  "summary": "Prepara un proyecto de TypeScript, recorre sus archivos y conecta Groq o Anthropic con trazas y manejo de errores.",
+  "description": "Una ruta de estudio construida con lo que llevo avanzado: entorno, conceptos, archivos del proyecto y conexión con Groq o Anthropic. Adapto mis apuntes del curso de Fernando Herrera (DevTalles) a explicaciones y prácticas propias. Basta con un proveedor funcionando; las implementaciones de patrones llegarán a medida que avance.",
   "audience": "Para quienes ya han programado y pueden leer funciones, objetos y async/await en JavaScript o TypeScript.",
   "topics": ["TypeScript", "Agentes de IA", "AI SDK", "Node.js", "Groq"],
-  "updatedAt": "2026-10-06T23:00:00.000Z",
+  "updatedAt": "2026-10-07",
   "prerequisites": [
     "Variables, funciones, objetos y promesas de JavaScript o TypeScript.",
     "Un editor, una terminal y Node.js con npm; Git para guardar tus cambios.",
-    "Para ejecutar las llamadas: acceso API a Groq y una credencial propia. Puedes estudiar los conceptos y clasificar errores sin realizar llamadas."
+    "Para ejecutar las llamadas: acceso API a Groq o Anthropic y una credencial propia. Puedes estudiar los conceptos y clasificar errores sin realizar llamadas."
   ],
   "preview": {
     "title": "Una primera llamada, un resultado observable",
@@ -32,7 +32,8 @@
       "chapter": "1. Preparación",
       "sourcePaths": [
         "session1: Instalaciones recomendadas/instalaciones.md",
-        "Introducion.md"
+        "Introducion.md",
+        "session3/temas puntuales.md"
       ],
       "objectives": [
         "Comprobar Node.js, npm y Git.",
@@ -75,7 +76,7 @@
           "title": "Elige un proveedor para comenzar",
           "body": [
             "El proyecto de estudio contempla Groq, OpenAI, Anthropic, Google y Ollama. Para comprobar la base basta con conectar uno.",
-            "Esta edición desarrolla el ejemplo con Groq, que es el proveedor seleccionado en el código actual. Ollama y los otros adaptadores quedan para futuras prácticas. No necesitas instalar todos para seguir las primeras lecciones."
+            "Esta edición comienza con Groq y ofrece una lección opcional para cambiar a Anthropic. Puedes completar la conexión con cualquiera de los dos. OpenAI, Google y Ollama permanecen como próximas prácticas; no necesitas instalar ni configurar todos los proveedores."
           ],
           "code": {
             "file": "Decisión de práctica",
@@ -228,19 +229,23 @@
     {
       "slug": "estructura-del-proyecto",
       "title": "Construye la base del proyecto",
-      "summary": "Prepara una versión mínima del proyecto de estudio y sigue su recorrido de ejecución.",
-      "minutes": 20,
+      "summary": "Construye la práctica mínima, ubica sus archivos y distingue código, dependencias y control de versiones.",
+      "minutes": 30,
       "chapter": "3. Proyecto base",
       "sourcePaths": [
         "session3/agentic-patterns/package.json",
         "session3/agentic-patterns/tsconfig.json",
         "session3/agentic-patterns/src/main.ts",
-        "session3/agentic-patterns/src/helpers/selected-model.ts"
+        "session3/agentic-patterns/src/helpers/selected-model.ts",
+        "session3/archivos y directorios del proyecto.md",
+        "session3/temas puntuales.md"
       ],
       "objectives": [
         "Crear una práctica sin depender de un repositorio público.",
         "Entender los scripts de desarrollo y compilación.",
-        "Localizar entrada, acción y selección del modelo."
+        "Localizar entrada, acción y selección del modelo.",
+        "Distinguir archivos versionados, dependencias y configuración local.",
+        "Reservar una carpeta para los próximos patrones."
       ],
       "steps": [
         {
@@ -304,6 +309,55 @@
             "highlightLines": []
           },
           "expected": "Distingues las piezas necesarias para conectar un modelo de las ayudas para estudiar su ejecución."
+        },
+        {
+          "id": "archivos-de-soporte",
+          "title": "Ubica configuración, dependencias y documentación",
+          "body": [
+            "package.json declara scripts y dependencias. package-lock.json registra las versiones resueltas: en esta práctica lo conservamos para reproducir la instalación. node_modules contiene los paquetes instalados y dist la salida de build; no son las carpetas donde escribes los ejercicios.",
+            "README.md explica cómo arrancar. .env contiene la configuración local; .env.example es la plantilla pública vacía. La base original llama a esa plantilla .env.template: identifica cuál existe antes de copiarla, sin sobrescribir tu .env.",
+            "La carpeta opcional .agents/skills guarda instrucciones para asistentes de programación. skills-lock.json registra información de las skills instaladas. Estas ayudas no se ejecutan como parte de la llamada al modelo y no son necesarias para completar la práctica mínima."
+          ],
+          "code": {
+            "file": "Mapa de archivos",
+            "language": "text",
+            "after": "package.json → scripts y dependencias\npackage-lock.json → versiones resueltas\nnode_modules/ → dependencias instaladas\ntsconfig.json → compilación y tipado\nREADME.md → instrucciones de uso\n.env → configuración local\n.env.example → plantilla pública vacía\n.gitignore → archivos que Git debe ignorar\n.agents/skills/ → ayuda opcional para asistentes\nskills-lock.json → registro de skills\nsrc/ → código que editas\ndist/ → resultado de compilar",
+            "highlightLines": []
+          },
+          "expected": "Puedes explicar qué se edita, qué se genera y qué archivo sirve de plantilla sin confundirlo con la credencial real."
+        },
+        {
+          "id": "git-y-carpetas",
+          "title": "Entiende qué guarda Git y dónde está el repositorio",
+          "body": [
+            "Una carpeta de apuntes puede existir sin ser un repositorio. .git contiene el historial y la configuración de Git y normalmente está oculto en Finder. .gitignore es un archivo de reglas; su presencia no crea un repositorio ni significa que todo esté publicado.",
+            "Comprueba desde tu carpeta si Git encuentra una raíz y un remoto. Si la práctica viene de un repositorio anidado, estos comandos pueden mostrar esa raíz y su origen, que no tienen por qué coincidir con el repositorio de la tutoría.",
+            "El repositorio del curso es My-free-time/patrones-diseno-agentico. Sus apuntes y su práctica acompañan tutorials/patrones-diseno-agentico.json, el archivo que consume el portafolio. Añadir un Markdown no modifica automáticamente las lecciones: hay que adaptar el JSON y publicar ese cambio."
+          ],
+          "code": {
+            "file": "Terminal, desde tu carpeta de trabajo",
+            "language": "bash",
+            "after": "git rev-parse --show-toplevel\ngit status --short\ngit remote -v",
+            "highlightLines": []
+          },
+          "expected": "Identificas la raíz y el remoto reales. Si Git responde que no hay repositorio, sabes que esa carpeta aún es solo un directorio local.",
+          "note": "La plantilla pública debe conservar valores vacíos. .gitignore no elimina archivos que ya estaban versionados."
+        },
+        {
+          "id": "carpeta-de-patrones",
+          "title": "Reserva el espacio para los próximos patrones",
+          "body": [
+            "La base incluye src/patterns/.gitkeep. Git versiona archivos; .gitkeep es un nombre convencional para conservar una carpeta inicialmente vacía, no una instrucción especial de Git.",
+            "Cada patrón tendrá su propio subdirectorio en src/patterns. main.ts seleccionará la práctica que quieras ejecutar y selected-model.ts seguirá concentrando el proveedor. Esta sección prepara la estructura; aún no implementa Tool Use ni ReAct.",
+            "Las tres acciones de conexión tienen objetivos diferentes: getMessageFromModel comprueba la llamada, getMessageFromModelWithTrace añade observación y getMessageFromModelFailSafe orienta el diagnóstico. El helper de colores solo cambia la presentación en consola."
+          ],
+          "code": {
+            "file": "Organización del proyecto base",
+            "language": "text",
+            "after": "src/\n├── main.ts\n├── actions/\n│   └── get-message-model.ts\n├── helpers/\n│   ├── selected-model.ts\n│   ├── string-colors.ts\n│   ├── create-tracer.ts\n│   └── index.ts\n└── patterns/\n    └── .gitkeep\n\nmain → práctica elegida → modelo compartido → proveedor",
+            "highlightLines": []
+          },
+          "expected": "Sabes dónde colocar futuros patrones y distingues la prueba básica, la traza y el diagnóstico."
         }
       ],
       "exercise": {
@@ -333,6 +387,28 @@
           ],
           "correctIndex": 1,
           "explanation": "El script build ejecuta tsc. La ejecución del modelo ocurre al arrancar la práctica."
+        },
+        {
+          "id": "gitkeep",
+          "question": "¿Para qué sirve .gitkeep en src/patterns?",
+          "options": [
+            "Para guardar la API key del proveedor.",
+            "Para tener un archivo que permita conservar la carpeta vacía en Git.",
+            "Para ejecutar automáticamente todos los patrones."
+          ],
+          "correctIndex": 1,
+          "explanation": "Git versiona archivos. .gitkeep es una convención para que la carpeta tenga un archivo desde el inicio."
+        },
+        {
+          "id": "fuente-del-tutorial",
+          "question": "¿Qué cambio actualiza las lecciones que lee el portafolio desde GitHub?",
+          "options": [
+            "Añadir únicamente un Markdown a los apuntes.",
+            "Editar y publicar tutorials/patrones-diseno-agentico.json en el repositorio del curso.",
+            "Modificar los paquetes dentro de node_modules."
+          ],
+          "correctIndex": 1,
+          "explanation": "El portafolio lee el JSON validado del curso. Los apuntes son material de origen que debe adaptarse a ese contrato."
         }
       ]
     },
@@ -705,6 +781,150 @@
           "explanation": "Capturar un error no debe convertir un fallo en una ejecución aparentemente correcta."
         }
       ]
+    },
+    {
+      "slug": "conecta-anthropic",
+      "title": "Conecta Anthropic como alternativa",
+      "summary": "Cambia el adaptador y la credencial conservando las acciones, las trazas y el punto de entrada.",
+      "minutes": 20,
+      "chapter": "4. Proveedores",
+      "sourcePaths": [
+        "session3/proveedor:antropic.md",
+        "session3/temas puntuales.md",
+        "session3/agentic-patterns/src/helpers/selected-model.ts",
+        "session3/agentic-patterns/package.json"
+      ],
+      "objectives": [
+        "Distinguir una suscripción de Claude del acceso a su API.",
+        "Configurar ANTHROPIC_API_KEY en el entorno local.",
+        "Cambiar de proveedor sin reescribir la acción.",
+        "Comprobar la conexión o interpretar el fallo."
+      ],
+      "steps": [
+        {
+          "id": "acceso-api-anthropic",
+          "title": "Prepara el acceso a la API de Anthropic",
+          "body": [
+            "Esta lección es una alternativa a Groq. Si ya tienes un proveedor funcionando, puedes continuar con él. Para practicar con Anthropic necesitas acceso a su Console y una credencial de API válida.",
+            "Una suscripción de Claude no incluye el uso de la API de Console. Revisa allí la facturación y los límites de tu cuenta antes de llamar al modelo. No fijamos una recarga mínima: las condiciones pueden cambiar.",
+            "Crea una clave para tu práctica y guárdala únicamente en el entorno local. Si usas una expiración, comprueba que siga vigente cuando retomes los ejercicios."
+          ],
+          "code": {
+            "file": "Lista de preparación",
+            "language": "text",
+            "after": "Proveedor → Anthropic\nCuenta → Claude Console\nAdaptador → @ai-sdk/anthropic\nVariable local → ANTHROPIC_API_KEY\nEjemplo del material → claude-haiku-4-5",
+            "highlightLines": []
+          },
+          "expected": "Puedes distinguir acceso a Claude, credencial de API y disponibilidad del modelo.",
+          "note": "Fuentes: https://support.claude.com/en/articles/9876003-i-have-a-paid-claude-subscription-pro-max-team-or-enterprise-plans-why-do-i-have-to-pay-separately-to-use-the-claude-api-and-console y https://ai-sdk.dev/providers/ai-sdk-providers/anthropic. No necesitas contratar otro proveedor para seguir el curso."
+        },
+        {
+          "id": "instalar-adaptador-anthropic",
+          "title": "Añade el adaptador a tu práctica",
+          "body": [
+            "La base original ya declara @ai-sdk/anthropic. Si reconstruiste la práctica mínima con Groq, añade el adaptador desde esa carpeta. La versión mostrada coincide con package.json del material de estudio y AI SDK 7.",
+            "Conserva ai y las dependencias de desarrollo. Este cambio se hace en la práctica, no en el proyecto web del portafolio. El proveedor se decide en selected-model.ts, no por instalar varios paquetes."
+          ],
+          "code": {
+            "file": "Terminal, dentro de la práctica",
+            "language": "bash",
+            "after": "npm install @ai-sdk/anthropic@4.0.37",
+            "highlightLines": []
+          },
+          "expected": "package.json y el lockfile registran el adaptador. Instalarlo aún no ejecuta una llamada."
+        },
+        {
+          "id": "credencial-anthropic",
+          "title": "Configura la variable que corresponde a Anthropic",
+          "body": [
+            "Añade ANTHROPIC_API_KEY con valor vacío a la plantilla pública .env.example. Si usas la base original, su plantilla puede llamarse .env.template. En tu .env local introduce el valor real sin espacios accidentales.",
+            "El adaptador anthropic usa ANTHROPIC_API_KEY por defecto. GROQ_API_KEY pertenece a Groq y no autentica una petición a Anthropic. Mantén .env excluido de Git; no copies la clave a selected-model.ts.",
+            "Los scripts de la práctica cargan .env con --env-file. Tener la variable escrita en un archivo no basta si ejecutas un comando que no carga ese entorno."
+          ],
+          "code": {
+            "file": ".env.example (plantilla pública)",
+            "language": "bash",
+            "after": "# Rellena estos valores solo en tu .env local.\nGROQ_API_KEY=\nANTHROPIC_API_KEY=",
+            "highlightLines": []
+          },
+          "expected": "La plantilla sigue sin credenciales y el entorno de la práctica contiene la variable del proveedor elegido."
+        },
+        {
+          "id": "seleccionar-anthropic",
+          "title": "Exporta un único modelo desde el selector",
+          "body": [
+            "Reemplaza el contenido del selector de la práctica por este ejemplo. Conserva el nombre exportado model para que las acciones existentes sigan importándolo sin cambios.",
+            "claude-haiku-4-5 es el identificador utilizado por el material y documentado por el adaptador. Confirma que esté disponible para tu cuenta. El autocompletado del editor puede orientar, pero no demuestra acceso ni disponibilidad en el servidor.",
+            "Si vuelves a Groq, restaura el selector anterior y su variable correspondiente. No necesitas duplicar las acciones ni mantener dos declaraciones export const model."
+          ],
+          "code": {
+            "file": "src/helpers/selected-model.ts",
+            "language": "typescript",
+            "after": "import { anthropic } from '@ai-sdk/anthropic';\n\nexport const model = anthropic('claude-haiku-4-5');",
+            "before": "import { groq } from '@ai-sdk/groq';\n\nexport const model = groq('openai/gpt-oss-20b');",
+            "highlightLines": []
+          },
+          "expected": "La acción importa el mismo model y ahora usa el adaptador Anthropic.",
+          "note": "Documentación del adaptador: https://ai-sdk.dev/providers/ai-sdk-providers/anthropic."
+        },
+        {
+          "id": "comprobar-anthropic",
+          "title": "Comprueba la conexión y revisa el resultado",
+          "body": [
+            "Usa getMessageFromModelFailSafe de la lección de errores si ya la implementaste. Ejecuta primero npm run build y después npm run dev desde la práctica. Compilar comprueba tipos; dev realiza la llamada real al proveedor.",
+            "El prompt pide “OK, todo listo!”. Registra la respuesta que realmente recibes. Si falla, confirma que cargas .env, que el nombre es ANTHROPIC_API_KEY, que la clave sigue vigente y que tienes acceso y capacidad de uso en Console.",
+            "Un 429 orienta a límites o cuota; un fallo sin HTTP puede ser de red. Usa el diagnóstico de la lección anterior y corrige la causa antes de repetir. El texto y el color de la consola no garantizan que futuros patrones funcionen bien."
+          ],
+          "code": {
+            "file": "src/main.ts",
+            "language": "typescript",
+            "after": "import { getMessageFromModelFailSafe } from './actions/get-message-model.js';\n\nawait getMessageFromModelFailSafe();",
+            "highlightLines": []
+          },
+          "expected": "Obtienes una respuesta real o una orientación de diagnóstico. Puedes explicar qué cambió al pasar de Groq a Anthropic.",
+          "note": "La función FailSafe se define en “Interpreta los errores de la conexión”. Si no la añadiste, usa getMessageFromModel de la primera llamada."
+        }
+      ],
+      "exercise": {
+        "prompt": "Dibuja el recorrido main → acción → model → Anthropic e identifica qué archivo y variable cambian al volver a Groq. Si tienes acceso a la API, comprueba la llamada; si no, completa el mapa sin ejecutarla.",
+        "hint": "La acción conserva la importación de model. Cambia el selector y la credencial del proveedor.",
+        "solution": "Anthropic usa @ai-sdk/anthropic y ANTHROPIC_API_KEY; Groq usa @ai-sdk/groq y GROQ_API_KEY. selected-model.ts exporta model en ambos casos. main.ts y la acción pueden permanecer iguales."
+      },
+      "questions": [
+        {
+          "id": "acceso-api",
+          "question": "¿Una suscripción de Claude sustituye la configuración de acceso a la API de Console?",
+          "options": [
+            "Sí, basta con usar la contraseña de Claude en el código.",
+            "No: la práctica requiere acceso y credencial de API de Console.",
+            "Solo si exportas dos modelos a la vez."
+          ],
+          "correctIndex": 1,
+          "explanation": "La suscripción y el uso de la API se gestionan por separado. La práctica usa una credencial de API."
+        },
+        {
+          "id": "variable-anthropic",
+          "question": "¿Qué variable usa por defecto el adaptador Anthropic?",
+          "options": [
+            "GROQ_API_KEY.",
+            "ANTHROPIC_API_KEY.",
+            "El nombre que quieras sin cambiar nada."
+          ],
+          "correctIndex": 1,
+          "explanation": "El adaptador lee ANTHROPIC_API_KEY por defecto; la variable de Groq pertenece a otro proveedor."
+        },
+        {
+          "id": "selector-compartido",
+          "question": "¿Qué permite cambiar de proveedor sin reescribir cada acción?",
+          "options": [
+            "Editar los paquetes dentro de node_modules.",
+            "Mantener model como exportación del selector y cambiar allí el adaptador.",
+            "Copiar la credencial dentro de cada prompt."
+          ],
+          "correctIndex": 1,
+          "explanation": "Las acciones importan model. El selector concentra la elección del proveedor y evita repetir esa decisión."
+        }
+      ]
     }
   ],
   "roadmap": [
@@ -721,8 +941,8 @@
       "summary": "Pedir una revisión humana antes de ejecutar acciones que requieren aprobación."
     },
     {
-      "title": "Otros proveedores y Ollama",
-      "summary": "Preparar prácticas de cambio de proveedor y ejecución local de modelos."
+      "title": "OpenAI, Google y Ollama",
+      "summary": "Ampliar la conexión a los otros proveedores del proyecto base y preparar una práctica con un modelo local."
     }
   ],
   "repositoryUrl": "https://github.com/My-free-time/patrones-diseno-agentico"

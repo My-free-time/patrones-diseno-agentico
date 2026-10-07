@@ -2,8 +2,9 @@
 
 Apuntes y laboratorio guiado de Victor Flores mientras estudia el curso de
 Fernando Herrera (DevTalles). El material de estudio está atribuido a su autor;
-las seis lecciones guiadas adaptan lo trabajado hasta ahora: entorno, conceptos,
-estructura del proyecto, primera llamada, trazas y errores. Los próximos patrones
+las siete lecciones guiadas adaptan lo trabajado hasta ahora: entorno, conceptos,
+estructura y archivos del proyecto, primera llamada, trazas, errores y Anthropic.
+Basta con un proveedor configurado; Anthropic es una alternativa opcional a Groq. Los próximos patrones
 se agregan al avanzar en el curso.
 
 ## Contenido que consume el portafolio
@@ -72,3 +73,11 @@ tutoría usan `onStepEnd`; el código base mantiene su callback original.
 
 La carpeta original de apuntes y su Git anidado se conservan localmente.
 Este repositorio tiene un historial nuevo y nunca incluye sus `.env` ni `.git`.
+
+## Carpeta de trabajo y apuntes originales
+
+La copia Git del curso está en `/Users/victorflores/patrones-diseno-agentico`.
+La carpeta `Patrones de diseño agéntico` conserva los apuntes originales y no
+tiene Git en su raíz; su práctica tiene un Git anidado del proyecto base.
+Abre la copia del curso en el editor para ver el historial y sus cambios.
+La carpeta `.git` está oculta en Finder; `Cmd + Shift + .` muestra archivos ocultos.
